@@ -479,3 +479,85 @@
 .bracket-tbd {
   @apply text-muted-foreground italic;
 }
+
+/* ============================================
+   CSV Import Styles
+   ============================================ */
+
+.import-page {
+  @apply min-h-screen pb-20;
+}
+
+.import-header {
+  @apply sticky top-0 z-10 bg-background border-b px-4 py-3;
+}
+
+.import-title {
+  @apply text-lg font-bold;
+}
+
+.import-content {
+  @apply p-4 flex flex-col gap-6;
+}
+
+.import-step {
+  @apply flex flex-col gap-3;
+}
+
+.import-step__label {
+  @apply text-sm font-semibold text-muted-foreground;
+}
+
+.import-dropzone {
+  @apply flex flex-col items-center justify-center gap-2 rounded-lg border-2
+         border-dashed p-8 text-center cursor-pointer transition-colors
+         hover:border-primary/50 hover:bg-muted/50;
+}
+
+.import-dropzone--active {
+  @apply border-primary bg-primary/5;
+}
+
+.import-dropzone__icon {
+  @apply h-8 w-8 text-muted-foreground;
+}
+
+.import-dropzone__text {
+  @apply text-sm text-muted-foreground;
+}
+
+.import-dropzone__filename {
+  @apply text-sm font-medium;
+}
+
+.import-preview {
+  @apply flex flex-col gap-3;
+}
+
+.import-preview__title {
+  @apply text-sm font-semibold flex items-center justify-between;
+}
+
+.import-preview__count {
+  @apply text-muted-foreground font-normal;
+}
+
+.import-preview__table-wrap {
+  @apply overflow-x-auto -mx-4 px-4;
+}
+
+.import-preview__table {
+  @apply w-full text-xs;
+}
+
+.import-error {
+  @apply text-sm text-destructive;
+}
+
+.import-error__list {
+  @apply list-disc pl-4 mt-1 space-y-0.5;
+}
+
+.import-success {
+  @apply text-sm text-green-600 dark:text-green-400 font-medium;
+}

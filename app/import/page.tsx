@@ -1,8 +1,12 @@
+import { CsvImport } from "@/components/import/CsvImport"
+
 export default function ImportPage() {
   return (
-    <div className="min-h-screen pb-20 p-4">
-      <h1 className="text-lg font-bold">CSV Import</h1>
-      <p className="text-muted-foreground mt-2">Coming soon</p>
+    <div className="import-page">
+      <header className="import-header">
+        <h1 className="import-title">CSV Import</h1>
+      </header>
+      <CsvImport />
     </div>
   )
 }
