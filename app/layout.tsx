@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { TopNav } from "@/components/layout/TopNav"
 import { BottomNav } from "@/components/layout/BottomNav"
 import "./globals.css"
 
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Hockey Tracker",
+  title: "digi_Chad",
   description: "Minor hockey team tracking app",
 }
 
@@ -28,7 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <TopNav />
+        <div className="app-content">
+          {children}
+        </div>
         <BottomNav />
       </body>
     </html>

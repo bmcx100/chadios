@@ -71,13 +71,10 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
       )}
       onClick={() => onTap?.(game)}
     >
-      <div className="game-card__top-row">
+      <div className="game-card__info">
         <span className="game-card__time">
           {formatTime(game.start_datetime)}
         </span>
-        {game.game_number && (
-          <span className="game-card__game-number">#{game.game_number}</span>
-        )}
         <span className="game-card__venue">{game.venue}</span>
         {isInProgress && (
           <span className="game-card__status-badge">
@@ -87,40 +84,38 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
         )}
       </div>
 
-      <div className="game-card__matchup">
-        <div
-          className={cn(
-            "game-card__team game-card__team--home",
-            game.home_team_id === MY_TEAM_ID && "game-card__team--highlight"
-          )}
-        >
-          <TeamDisplay
-            team={game.home_team}
-            placeholder={game.home_placeholder}
-            rank={homeRank}
-          />
-        </div>
-
-        {isCompleted ? (
-          <span className="game-card__score">
-            {game.final_score_home} - {game.final_score_away}
-          </span>
-        ) : (
-          <span className="game-card__vs">vs</span>
+      <div
+        className={cn(
+          "game-card__team",
+          game.home_team_id === MY_TEAM_ID && "game-card__team--highlight"
         )}
+      >
+        <TeamDisplay
+          team={game.home_team}
+          placeholder={game.home_placeholder}
+          rank={homeRank}
+        />
+      </div>
 
-        <div
-          className={cn(
-            "game-card__team game-card__team--away",
-            game.away_team_id === MY_TEAM_ID && "game-card__team--highlight"
-          )}
-        >
-          <TeamDisplay
-            team={game.away_team}
-            placeholder={game.away_placeholder}
-            rank={awayRank}
-          />
-        </div>
+      {isCompleted ? (
+        <span className="game-card__score">
+          {game.final_score_home} - {game.final_score_away}
+        </span>
+      ) : (
+        <span className="game-card__vs">vs</span>
+      )}
+
+      <div
+        className={cn(
+          "game-card__team",
+          game.away_team_id === MY_TEAM_ID && "game-card__team--highlight"
+        )}
+      >
+        <TeamDisplay
+          team={game.away_team}
+          placeholder={game.away_placeholder}
+          rank={awayRank}
+        />
       </div>
     </button>
   )
