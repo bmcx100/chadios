@@ -2,10 +2,11 @@
 
 import { cn } from "@/lib/utils"
 import { MY_TEAM_ID } from "@/lib/constants"
-import type { Game } from "@/lib/types"
+import type { Game, RankingsMap } from "@/lib/types"
 
 interface GameCardProps {
   game: Game
+  rankings?: RankingsMap
   onTap?: (game: Game) => void
 }
 
@@ -17,7 +18,7 @@ function formatTime(datetime: string) {
   })
 }
 
-export function GameCard({ game, onTap }: GameCardProps) {
+export function GameCard({ game, rankings, onTap }: GameCardProps) {
   const isMyTeam =
     game.home_team_id === MY_TEAM_ID || game.away_team_id === MY_TEAM_ID
   const isInProgress = game.status === "in_progress"
@@ -25,6 +26,8 @@ export function GameCard({ game, onTap }: GameCardProps) {
 
   const homeName = game.home_team?.name ?? game.home_placeholder ?? "TBD"
   const awayName = game.away_team?.name ?? game.away_placeholder ?? "TBD"
+  const homeRank = game.home_team_id ? rankings?.[game.home_team_id] : undefined
+  const awayRank = game.away_team_id ? rankings?.[game.away_team_id] : undefined
 
   return (
     <button
@@ -61,6 +64,9 @@ export function GameCard({ game, onTap }: GameCardProps) {
           )}
         >
           {homeName}
+          {homeRank != null && (
+            <span className="game-card__rank"> #{homeRank}</span>
+          )}
         </span>
 
         {isCompleted ? (
@@ -78,6 +84,9 @@ export function GameCard({ game, onTap }: GameCardProps) {
           )}
         >
           {awayName}
+          {awayRank != null && (
+            <span className="game-card__rank"> #{awayRank}</span>
+          )}
         </span>
       </div>
     </button>

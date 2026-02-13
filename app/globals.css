@@ -197,6 +197,10 @@
   @apply font-bold text-blue-600 dark:text-blue-400;
 }
 
+.game-card__rank {
+  @apply text-[10px] text-muted-foreground font-normal ml-0.5;
+}
+
 .game-card__vs {
   @apply text-xs text-muted-foreground shrink-0;
 }
@@ -265,6 +269,10 @@
 
 .score-entry__team-name {
   @apply text-sm font-semibold text-center leading-tight;
+}
+
+.score-entry__team-rank {
+  @apply text-xs text-muted-foreground font-normal;
 }
 
 .score-entry__score-input {
@@ -408,6 +416,10 @@
   @apply text-[10px] text-yellow-600 dark:text-yellow-400 ml-1;
 }
 
+.standings-row__rank {
+  @apply text-[10px] text-muted-foreground;
+}
+
 /* ============================================
    Bracket Styles
    ============================================ */
@@ -462,6 +474,10 @@
 
 .bracket-team-name {
   @apply truncate flex-1;
+}
+
+.bracket-team-rank {
+  @apply text-[10px] text-muted-foreground font-normal ml-1;
 }
 
 .bracket-team-score {

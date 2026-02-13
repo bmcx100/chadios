@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { TOURNAMENT_ID } from "@/lib/constants"
 import { calculateStandings } from "@/lib/standings-engine"
 import { BracketView } from "@/components/bracket/BracketView"
-import type { Game, TiebreakerRule } from "@/lib/types"
+import type { Game, TiebreakerRule, RankingsMap } from "@/lib/types"
 
 export default async function BracketPage() {
   const supabase = await createClient()
@@ -123,6 +123,19 @@ export default async function BracketPage() {
     return resolved
   }
 
+  // Fetch provincial rankings
+  const { data: rankingsData } = await supabase
+    .from("provincial_rankings")
+    .select("team_id, rank")
+    .order("date_recorded", { ascending: false })
+
+  const rankings: RankingsMap = {}
+  for (const r of rankingsData ?? []) {
+    if (!(r.team_id in rankings)) {
+      rankings[r.team_id] = r.rank
+    }
+  }
+
   return (
     <div className="bracket-page">
       <div className="bracket-header">
@@ -133,6 +146,7 @@ export default async function BracketPage() {
         semi1={resolvePlaceholder(semi1)}
         semi2={resolvePlaceholder(semi2)}
         final={resolvePlaceholder(finalGame)}
+        rankings={rankings}
       />
     </div>
   )

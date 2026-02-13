@@ -3,17 +3,20 @@
 import { cn } from "@/lib/utils"
 import { MY_TEAM_ID } from "@/lib/constants"
 import type { TeamStanding } from "@/lib/standings-engine"
+import type { RankingsMap } from "@/lib/types"
 
 interface StandingsTableProps {
   poolName: string
   standings: TeamStanding[]
   advancementCount: number
+  rankings?: RankingsMap
 }
 
 export function StandingsTable({
   poolName,
   standings,
   advancementCount,
+  rankings,
 }: StandingsTableProps) {
   return (
     <div className="standings-pool">
@@ -23,6 +26,7 @@ export function StandingsTable({
           <thead>
             <tr>
               <th>Team</th>
+              <th>PR</th>
               <th>GP</th>
               <th>W</th>
               <th>L</th>
@@ -65,6 +69,11 @@ export function StandingsTable({
                         </span>
                       )}
                     </div>
+                  </td>
+                  <td>
+                    {rankings?.[team.teamId] != null && (
+                      <span className="standings-row__rank">#{rankings[team.teamId]}</span>
+                    )}
                   </td>
                   <td>{team.gp}</td>
                   <td>{team.w}</td>

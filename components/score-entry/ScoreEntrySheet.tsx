@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from "@/lib/supabase/client"
-import type { Game } from "@/lib/types"
+import type { Game, RankingsMap } from "@/lib/types"
 
 interface ScoreEntrySheetProps {
   game: Game | null
+  rankings?: RankingsMap
   open: boolean
   onOpenChange: (open: boolean) => void
   onSaved?: () => void
@@ -22,6 +23,7 @@ interface ScoreEntrySheetProps {
 
 export function ScoreEntrySheet({
   game,
+  rankings,
   open,
   onOpenChange,
   onSaved,
@@ -115,6 +117,8 @@ export function ScoreEntrySheet({
 
   const homeName = game.home_team?.name ?? game.home_placeholder ?? "Home"
   const awayName = game.away_team?.name ?? game.away_placeholder ?? "Away"
+  const homeRank = game.home_team_id ? rankings?.[game.home_team_id] : undefined
+  const awayRank = game.away_team_id ? rankings?.[game.away_team_id] : undefined
 
   function toSeconds(min: string, sec: string): number | null {
     const m = parseInt(min)
@@ -214,7 +218,12 @@ export function ScoreEntrySheet({
           {/* Final Score */}
           <div className="score-entry__teams">
             <div className="score-entry__team-col">
-              <span className="score-entry__team-name">{homeName}</span>
+              <span className="score-entry__team-name">
+                {homeName}
+                {homeRank != null && (
+                  <span className="score-entry__team-rank"> #{homeRank}</span>
+                )}
+              </span>
               <Input
                 type="number"
                 min="0"
@@ -226,7 +235,12 @@ export function ScoreEntrySheet({
             </div>
             <span className="score-entry__divider">-</span>
             <div className="score-entry__team-col">
-              <span className="score-entry__team-name">{awayName}</span>
+              <span className="score-entry__team-name">
+                {awayName}
+                {awayRank != null && (
+                  <span className="score-entry__team-rank"> #{awayRank}</span>
+                )}
+              </span>
               <Input
                 type="number"
                 min="0"

@@ -4,11 +4,12 @@ import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { GameCard } from "./GameCard"
-import type { Game, Pool } from "@/lib/types"
+import type { Game, Pool, RankingsMap } from "@/lib/types"
 
 interface ScheduleViewProps {
   games: Game[]
   pools: Pool[]
+  rankings?: RankingsMap
   onGameTap?: (game: Game) => void
 }
 
@@ -24,7 +25,7 @@ function getDateKey(datetime: string) {
   return new Date(datetime).toLocaleDateString("en-CA")
 }
 
-export function ScheduleView({ games, pools, onGameTap }: ScheduleViewProps) {
+export function ScheduleView({ games, pools, rankings, onGameTap }: ScheduleViewProps) {
   const days = Object.keys(DAY_LABELS)
   const [activeDay, setActiveDay] = useState(days[0])
   const [poolFilter, setPoolFilter] = useState<PoolFilter>("all")
@@ -95,7 +96,7 @@ export function ScheduleView({ games, pools, onGameTap }: ScheduleViewProps) {
           </p>
         ) : (
           sortedGames.map((game) => (
-            <GameCard key={game.id} game={game} onTap={onGameTap} />
+            <GameCard key={game.id} game={game} rankings={rankings} onTap={onGameTap} />
           ))
         )}
       </div>

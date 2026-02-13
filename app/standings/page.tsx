@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { TOURNAMENT_ID } from "@/lib/constants"
 import { calculateStandings } from "@/lib/standings-engine"
 import { StandingsTable } from "@/components/standings/StandingsTable"
-import type { Game, TiebreakerRule } from "@/lib/types"
+import type { Game, TiebreakerRule, RankingsMap } from "@/lib/types"
 
 export default async function StandingsPage() {
   const supabase = await createClient()
@@ -41,6 +41,19 @@ export default async function StandingsPage() {
     .select("*")
     .eq("tournament_id", TOURNAMENT_ID)
     .order("priority_order")
+
+  // Fetch provincial rankings
+  const { data: rankingsData } = await supabase
+    .from("provincial_rankings")
+    .select("team_id, rank")
+    .order("date_recorded", { ascending: false })
+
+  const rankings: RankingsMap = {}
+  for (const r of rankingsData ?? []) {
+    if (!(r.team_id in rankings)) {
+      rankings[r.team_id] = r.rank
+    }
+  }
 
   const goalDiffCap = tournament?.goal_differential_cap ?? 5
   const pts = pointStructure ?? { win_points: 2, tie_points: 1, loss_points: 0 }
@@ -83,6 +96,7 @@ export default async function StandingsPage() {
           poolName={pool.name}
           standings={standings}
           advancementCount={pool.advancement_count}
+          rankings={rankings}
         />
       ))}
     </div>

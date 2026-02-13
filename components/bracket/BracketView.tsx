@@ -2,21 +2,24 @@
 
 import { cn } from "@/lib/utils"
 import { MY_TEAM_ID } from "@/lib/constants"
-import type { Game } from "@/lib/types"
+import type { Game, RankingsMap } from "@/lib/types"
 
 interface BracketViewProps {
   semi1: Game | null
   semi2: Game | null
   final: Game | null
+  rankings?: RankingsMap
 }
 
-function BracketGame({ game }: { game: Game | null }) {
+function BracketGame({ game, rankings }: { game: Game | null; rankings?: RankingsMap }) {
   if (!game) return null
 
   const homeName =
     game.home_team?.name ?? game.home_placeholder ?? "TBD"
   const awayName =
     game.away_team?.name ?? game.away_placeholder ?? "TBD"
+  const homeRank = game.home_team_id ? rankings?.[game.home_team_id] : undefined
+  const awayRank = game.away_team_id ? rankings?.[game.away_team_id] : undefined
   const isCompleted = game.status === "completed"
   const homeIsMyTeam = game.home_team_id === MY_TEAM_ID
   const awayIsMyTeam = game.away_team_id === MY_TEAM_ID
@@ -54,6 +57,9 @@ function BracketGame({ game }: { game: Game | null }) {
           )}
         >
           {homeName}
+          {homeRank != null && (
+            <span className="bracket-team-rank">#{homeRank}</span>
+          )}
         </span>
         {isCompleted && (
           <span className="bracket-team-score">
@@ -75,6 +81,9 @@ function BracketGame({ game }: { game: Game | null }) {
           )}
         >
           {awayName}
+          {awayRank != null && (
+            <span className="bracket-team-rank">#{awayRank}</span>
+          )}
         </span>
         {isCompleted && (
           <span className="bracket-team-score">
@@ -86,14 +95,14 @@ function BracketGame({ game }: { game: Game | null }) {
   )
 }
 
-export function BracketView({ semi1, semi2, final: finalGame }: BracketViewProps) {
+export function BracketView({ semi1, semi2, final: finalGame, rankings }: BracketViewProps) {
   return (
     <div className="bracket-container">
       <div className="bracket-round">
         <h3 className="bracket-round__title">Semi-Finals</h3>
         <div className="flex flex-col gap-4">
-          <BracketGame game={semi1} />
-          <BracketGame game={semi2} />
+          <BracketGame game={semi1} rankings={rankings} />
+          <BracketGame game={semi2} rankings={rankings} />
         </div>
       </div>
 
@@ -103,7 +112,7 @@ export function BracketView({ semi1, semi2, final: finalGame }: BracketViewProps
 
       <div className="bracket-round">
         <h3 className="bracket-round__title">Final</h3>
-        <BracketGame game={finalGame} />
+        <BracketGame game={finalGame} rankings={rankings} />
       </div>
     </div>
   )

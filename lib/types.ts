@@ -73,6 +73,8 @@ export interface TiebreakerRule {
   description: string | null
 }
 
+export type RankingsMap = Record<string, number>
+
 export interface PointStructure {
   win_points: number
   tie_points: number

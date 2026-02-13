@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { TOURNAMENT_ID } from "@/lib/constants"
 import { ScheduleWithScoreEntry } from "@/components/schedule/ScheduleWithScoreEntry"
-import type { Game, Pool } from "@/lib/types"
+import type { Game, Pool, RankingsMap } from "@/lib/types"
 
 export default async function SchedulePage() {
   const supabase = await createClient()
@@ -29,6 +29,19 @@ export default async function SchedulePage() {
     .eq("tournament_id", TOURNAMENT_ID)
     .order("start_datetime")
 
+  // Fetch provincial rankings for all tournament teams
+  const { data: rankingsData } = await supabase
+    .from("provincial_rankings")
+    .select("team_id, rank")
+    .order("date_recorded", { ascending: false })
+
+  const rankings: RankingsMap = {}
+  for (const r of rankingsData ?? []) {
+    if (!(r.team_id in rankings)) {
+      rankings[r.team_id] = r.rank
+    }
+  }
+
   return (
     <div className="schedule-page">
       <div className="schedule-header">
@@ -41,6 +54,7 @@ export default async function SchedulePage() {
       <ScheduleWithScoreEntry
         games={(games as Game[]) ?? []}
         pools={(pools as Pool[]) ?? []}
+        rankings={rankings}
       />
     </div>
   )
