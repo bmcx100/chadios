@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils"
 import { Calendar, Trophy, Ellipsis, MessageSquare } from "lucide-react"
 
 const navItems = [
-  { href: "/chat", label: "Chat", icon: MessageSquare },
-  { href: "/schedule", label: "Schedule", icon: Calendar },
   { href: "/standings", label: "Standings", icon: Trophy },
+  { href: "/schedule", label: "Schedule", icon: Calendar },
   { href: "/misc", label: "Misc", icon: Ellipsis },
+  { href: "/chat", label: "Chat", icon: MessageSquare },
 ]
 
 export function BottomNav() {

@@ -116,8 +116,8 @@ export default async function StandingsPage() {
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/hisnameis.png"
-        alt="His name is Chad"
+        src="/images/juststanding.png"
+        alt="Just standing"
         className="standings-footer-img"
       />
     </div>

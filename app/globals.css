@@ -811,7 +811,7 @@
 }
 
 .bracket-container {
-  @apply flex flex-col items-center gap-2 p-6;
+  @apply flex flex-col items-center gap-1 p-4;
 }
 
 .bracket-round {
@@ -833,7 +833,7 @@
 }
 
 .bracket-team-row {
-  @apply flex items-center justify-between px-5 py-4 text-base;
+  @apply flex items-center justify-between px-5 py-2 text-base;
 }
 
 .bracket-team-row:first-child {
@@ -862,15 +862,26 @@
 }
 
 .bracket-connector {
-  @apply flex justify-center py-2;
+  @apply flex justify-center py-1;
 }
 
 .bracket-connector__line {
-  @apply w-px h-6 bg-border;
+  @apply w-px h-4 bg-border;
 }
 
 .bracket-tbd {
   @apply text-muted-foreground italic text-base;
+}
+
+.bracket-footer-img {
+  @apply fixed left-0 w-full z-30 pointer-events-none;
+  bottom: 3.5rem;
+}
+
+@media (min-width: 1024px) {
+  .bracket-footer-img {
+    bottom: 0;
+  }
 }
 
 /* ============================================
@@ -892,7 +903,7 @@
 }
 
 .import-content {
-  @apply p-4 flex flex-col gap-4 rounded-lg;
+  @apply p-4 flex flex-col gap-4 rounded-lg relative z-10;
   background: oklch(0.2 0 0 / 0.9);
 }
 
