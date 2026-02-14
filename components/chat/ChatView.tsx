@@ -127,9 +127,13 @@ export function ChatView() {
     setListening(true)
   }
 
-  const hasSpeech =
-    typeof window !== "undefined" &&
-    ("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
+  const [hasSpeech, setHasSpeech] = useState(false)
+
+  useEffect(() => {
+    setHasSpeech(
+      "webkitSpeechRecognition" in window || "SpeechRecognition" in window
+    )
+  }, [])
 
   return (
     <div className="chat-page">

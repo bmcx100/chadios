@@ -30,11 +30,19 @@ export default async function StandingsPage() {
     .select("pool_id, team_id, teams(id, name)")
     .in("pool_id", (pools ?? []).map((p) => p.id))
 
-  const { data: games } = await supabase
+  const { data: allGames } = await supabase
     .from("games")
-    .select("*")
+    .select(`
+      *,
+      home_team:teams!games_home_team_id_fkey(id, name, short_location, short_name),
+      away_team:teams!games_away_team_id_fkey(id, name, short_location, short_name),
+      pool:pools!games_pool_id_fkey(id, name)
+    `)
     .eq("tournament_id", TOURNAMENT_ID)
-    .eq("stage", "pool_play")
+
+  const games = (allGames ?? []).filter(
+    (g) => g.stage === "pool_play"
+  )
 
   const { data: tiebreakerRules } = await supabase
     .from("tiebreaker_rules")
@@ -72,7 +80,7 @@ export default async function StandingsPage() {
         return { teamId: team.id, teamName: team.name }
       })
 
-    const poolGames = (games ?? []).filter(
+    const poolGames = games.filter(
       (g) => g.pool_id === pool.id
     ) as Game[]
 
@@ -112,6 +120,7 @@ export default async function StandingsPage() {
         poolStandings={poolStandings}
         rankings={rankings}
         myTeamPoolId={myTeamPoolId}
+        games={(allGames ?? []) as Game[]}
       />
 
       {/* eslint-disable-next-line @next/next/no-img-element */}

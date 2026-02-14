@@ -11,6 +11,7 @@ interface StandingsTableProps {
   standings: TeamStanding[]
   advancementCount: number
   rankings?: RankingsMap
+  onTeamTap?: (teamId: string) => void
 }
 
 export function StandingsTable({
@@ -18,6 +19,7 @@ export function StandingsTable({
   standings,
   advancementCount,
   rankings,
+  onTeamTap,
 }: StandingsTableProps) {
   const [expanded, setExpanded] = useState(false)
 
@@ -76,9 +78,13 @@ export function StandingsTable({
                     )}
                   </td>
                   <td className="standings-cell--team">
-                    <span className="standings-row__team-name">
+                    <button
+                      type="button"
+                      className="standings-row__team-name standings-row__team-name--clickable"
+                      onClick={() => onTeamTap?.(team.teamId)}
+                    >
                       {team.teamName}
-                    </span>
+                    </button>
                   </td>
                   <td className="standings-cell--pts">{team.pts}</td>
                   <td>{team.gp}</td>

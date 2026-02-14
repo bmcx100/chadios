@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { StandingsTable } from "./StandingsTable"
+import { TeamGamesSheet } from "@/components/schedule/TeamGamesSheet"
 import type { TeamStanding } from "@/lib/standings-engine"
-import type { RankingsMap } from "@/lib/types"
+import type { Game, RankingsMap } from "@/lib/types"
 
 interface PoolStanding {
   pool: {
@@ -19,15 +20,24 @@ interface StandingsViewProps {
   poolStandings: PoolStanding[]
   rankings: RankingsMap
   myTeamPoolId?: string
+  games: Game[]
 }
 
 export function StandingsView({
   poolStandings,
   rankings,
   myTeamPoolId,
+  games,
 }: StandingsViewProps) {
   const defaultPool = myTeamPoolId ?? poolStandings[0]?.pool.id ?? ""
   const [activePool, setActivePool] = useState(defaultPool)
+  const [teamId, setTeamId] = useState<string | null>(null)
+  const [teamSheetOpen, setTeamSheetOpen] = useState(false)
+
+  const handleTeamTap = useCallback((id: string) => {
+    setTeamId(id)
+    setTeamSheetOpen(true)
+  }, [])
 
   const current = poolStandings.find((ps) => ps.pool.id === activePool)
 
@@ -49,8 +59,17 @@ export function StandingsView({
           standings={current.standings}
           advancementCount={current.pool.advancement_count}
           rankings={rankings}
+          onTeamTap={handleTeamTap}
         />
       )}
+
+      <TeamGamesSheet
+        teamId={teamId}
+        games={games}
+        rankings={rankings}
+        open={teamSheetOpen}
+        onOpenChange={setTeamSheetOpen}
+      />
     </div>
   )
 }
