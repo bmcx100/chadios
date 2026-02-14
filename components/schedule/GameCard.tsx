@@ -23,11 +23,13 @@ function TeamDisplay({
   team,
   placeholder,
   rank,
+  isHome,
   onTeamTap,
 }: {
   team: Team | null
   placeholder: string | null
   rank: number | undefined
+  isHome?: boolean
   onTeamTap?: (teamId: string) => void
 }) {
   const handleClick = (e: React.MouseEvent) => {
@@ -42,6 +44,7 @@ function TeamDisplay({
   }
 
   const fullName = team.name
+  const rankEl = rank != null ? <span className="game-card__rank">#{rank} </span> : null
 
   if (team.short_location && team.short_name) {
     return (
@@ -52,8 +55,9 @@ function TeamDisplay({
       >
         <span className="game-card__team-location">{team.short_location}</span>
         <span className="game-card__team-name">
+          {isHome && rankEl}
           {team.short_name}
-          {rank != null && <span className="game-card__rank"> #{rank}</span>}
+          {!isHome && rank != null && <span className="game-card__rank"> #{rank}</span>}
         </span>
       </span>
     )
@@ -66,8 +70,9 @@ function TeamDisplay({
       onClick={handleClick}
     >
       <span className="game-card__team-name">
+        {isHome && rankEl}
         {team.name}
-        {rank != null && <span className="game-card__rank"> #{rank}</span>}
+        {!isHome && rank != null && <span className="game-card__rank"> #{rank}</span>}
       </span>
     </span>
   )
@@ -83,15 +88,13 @@ export function GameCard({ game, rankings, onTap, onTeamTap }: GameCardProps) {
   const awayRank = game.away_team_id ? rankings?.[game.away_team_id] : undefined
 
   return (
-    <button
-      type="button"
+    <div
       className={cn(
         "game-card",
         isMyTeam && "game-card--my-team",
         isInProgress && "game-card--in-progress",
         isCompleted && "game-card--completed"
       )}
-      onClick={() => onTap?.(game)}
     >
       <div className="game-card__info">
         <span className="game-card__time">
@@ -116,16 +119,27 @@ export function GameCard({ game, rankings, onTap, onTeamTap }: GameCardProps) {
           team={game.home_team}
           placeholder={game.home_placeholder}
           rank={homeRank}
+          isHome
           onTeamTap={onTeamTap}
         />
       </div>
 
       {isCompleted ? (
-        <span className="game-card__score">
+        <button
+          type="button"
+          className="game-card__score"
+          onClick={() => onTap?.(game)}
+        >
           {game.final_score_home} - {game.final_score_away}
-        </span>
+        </button>
       ) : (
-        <span className="game-card__vs">vs</span>
+        <button
+          type="button"
+          className="game-card__vs"
+          onClick={() => onTap?.(game)}
+        >
+          vs
+        </button>
       )}
 
       <div
@@ -141,6 +155,6 @@ export function GameCard({ game, rankings, onTap, onTeamTap }: GameCardProps) {
           onTeamTap={onTeamTap}
         />
       </div>
-    </button>
+    </div>
   )
 }

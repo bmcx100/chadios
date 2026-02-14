@@ -230,7 +230,10 @@
 }
 
 .game-card--completed .game-card__score {
-  @apply text-sm font-semibold text-muted-foreground;
+  @apply text-sm font-semibold text-muted-foreground cursor-pointer;
+}
+.game-card__score:hover {
+  @apply text-foreground;
 }
 
 .game-card__info {
@@ -273,10 +276,12 @@
 
 .game-card__team-location {
   @apply text-sm font-semibold leading-tight text-foreground truncate;
+  max-width: 15ch;
 }
 
 .game-card__team-name {
   @apply text-sm font-semibold leading-tight text-foreground truncate;
+  max-width: 15ch;
 }
 
 .game-card__rank {
@@ -284,7 +289,10 @@
 }
 
 .game-card__vs {
-  @apply text-base font-semibold text-foreground/40 text-center;
+  @apply text-base font-semibold text-foreground/40 text-center cursor-pointer;
+}
+.game-card__vs:hover {
+  @apply text-foreground/70;
 }
 
 .game-card__score {
@@ -638,7 +646,7 @@
 }
 
 .standings-details-toggle {
-  @apply text-xs text-muted-foreground underline underline-offset-2
+  @apply text-xs text-foreground/80 underline underline-offset-2
          hover:text-foreground transition-colors cursor-pointer;
 }
 
@@ -918,13 +926,27 @@
    ============================================ */
 
 .chat-page {
-  @apply min-h-screen pb-20 lg:pb-6 flex flex-col relative;
+  @apply min-h-screen pb-20 lg:pb-6 flex flex-col relative lg:max-w-xl lg:mx-auto;
   background: url("/images/chadio_background.png") center top / 100% auto no-repeat;
+}
+
+.chat-page::before {
+  content: "";
+  @apply absolute pointer-events-none;
+  z-index: 5;
+  top: 25vh;
+  right: 1rem;
+  width: 52%;
+  aspect-ratio: 1;
+  transform: rotate(30deg);
+  background: url("/images/not_chadapproved.png") center / contain no-repeat;
+  opacity: 1;
 }
 
 .chat-page::after {
   content: "";
   @apply absolute inset-0 pointer-events-none;
+  z-index: 2;
   background: linear-gradient(to top, oklch(0.15 0 0 / 0.92) 0%, oklch(0.15 0 0 / 0.6) 50%, transparent 100%);
 }
 
@@ -970,8 +992,7 @@
 
 .chat-bubble--assistant {
   @apply self-start rounded-bl-sm text-white;
-  background: oklch(0.45 0.15 350 / 0.85);
-  backdrop-filter: blur(8px);
+  background: oklch(0.55 0.2 350);
 }
 
 .chat-bubble--thinking {

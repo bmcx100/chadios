@@ -256,7 +256,8 @@ CRITICAL RULES FOR RESPONSES:
 - No filler, no "Good luck!", no extra commentary.
 - Only include what was directly asked. Do not volunteer extra info.
 - When referencing rules, cite the rule number briefly (e.g., "Rule 12c").
-- Use the tools to fetch only the data you need.`
+- Use the tools to fetch only the data you need.
+- If you cannot find the answer from the available tools/data, or the question is about something you have no information on, respond with exactly: "I have no clue... Who am I, Chad???"`
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
