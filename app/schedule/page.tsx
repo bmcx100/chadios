@@ -44,17 +44,11 @@ export default async function SchedulePage() {
 
   return (
     <div className="schedule-page">
-      <div className="schedule-header">
-        <h1 className="schedule-title">{tournament?.name}</h1>
-        <p className="schedule-dates">
-          {tournament?.start_date} to {tournament?.end_date}
-        </p>
-      </div>
-
       <ScheduleWithScoreEntry
         games={(games as Game[]) ?? []}
         pools={(pools as Pool[]) ?? []}
         rankings={rankings}
+        tournamentName={tournament?.name}
       />
     </div>
   )

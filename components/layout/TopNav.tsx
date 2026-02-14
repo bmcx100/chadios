@@ -3,13 +3,12 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Calendar, Trophy, GitBranch, Upload, MessageSquare } from "lucide-react"
+import { Calendar, Trophy, Ellipsis, MessageSquare } from "lucide-react"
 
 const navItems = [
   { href: "/schedule", label: "Schedule", icon: Calendar },
   { href: "/standings", label: "Standings", icon: Trophy },
-  { href: "/bracket", label: "Bracket", icon: GitBranch },
-  { href: "/import", label: "Import", icon: Upload },
+  { href: "/misc", label: "Misc", icon: Ellipsis },
   { href: "/chat", label: "Chat", icon: MessageSquare },
 ]
 
@@ -19,7 +18,8 @@ export function TopNav() {
   return (
     <nav className="top-nav">
       <Link href="/schedule" className="top-nav__brand">
-        digi_Chad
+        <span className="top-nav__brand-name">Chadiós</span>
+        <span className="top-nav__brand-tagline"> — Adiós a los Datos Básicos</span>
       </Link>
       <div className="top-nav__links">
         {navItems.map((item) => {

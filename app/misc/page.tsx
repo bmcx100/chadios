@@ -1,10 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { TOURNAMENT_ID } from "@/lib/constants"
 import { calculateStandings } from "@/lib/standings-engine"
-import { BracketView } from "@/components/bracket/BracketView"
+import { MiscView } from "@/components/misc/MiscView"
 import type { Game, TiebreakerRule, RankingsMap } from "@/lib/types"
 
-export default async function BracketPage() {
+export default async function MiscPage() {
   const supabase = await createClient()
 
   const { data: tournament } = await supabase
@@ -13,7 +13,6 @@ export default async function BracketPage() {
     .eq("id", TOURNAMENT_ID)
     .single()
 
-  // Fetch bracket games
   const { data: bracketGames } = await supabase
     .from("games")
     .select(`
@@ -30,7 +29,6 @@ export default async function BracketPage() {
   const semi2 = games.find((g) => g.stage === "semifinal" && g.game_number === "372") ?? null
   const finalGame = games.find((g) => g.stage === "final") ?? null
 
-  // Compute standings to auto-populate bracket placeholders
   const { data: pools } = await supabase
     .from("pools")
     .select("id, name, advancement_count")
@@ -63,7 +61,6 @@ export default async function BracketPage() {
   const goalDiffCap = tournament?.goal_differential_cap ?? 5
   const pts = pointStructure ?? { win_points: 2, tie_points: 1, loss_points: 0 }
 
-  // Build a map of pool standings: "Pool A" -> [1st, 2nd, ...]
   const standingsMap = new Map<string, { teamId: string; teamName: string }[]>()
   for (const pool of pools ?? []) {
     const teamsInPool = (poolTeamsData ?? [])
@@ -87,7 +84,6 @@ export default async function BracketPage() {
     )
   }
 
-  // Resolve placeholder text like "1st Pool A" to actual team from standings
   function resolvePlaceholder(game: Game | null): Game | null {
     if (!game) return null
 
@@ -123,7 +119,6 @@ export default async function BracketPage() {
     return resolved
   }
 
-  // Fetch provincial rankings
   const { data: rankingsData } = await supabase
     .from("provincial_rankings")
     .select("team_id, rank")
@@ -137,8 +132,8 @@ export default async function BracketPage() {
   }
 
   return (
-    <div className="bracket-page">
-      <div className="bracket-header">
+    <div className="misc-page">
+      <div className="misc-header">
         <div className="page-brand-row">
           <h1 className="page-brand">Chadiós</h1>
           <span className="page-tagline">Adiós a los Datos Básicos</span>
@@ -146,10 +141,10 @@ export default async function BracketPage() {
         <p className="page-tournament">{tournament?.name}</p>
       </div>
 
-      <BracketView
+      <MiscView
         semi1={resolvePlaceholder(semi1)}
         semi2={resolvePlaceholder(semi2)}
-        final={resolvePlaceholder(finalGame)}
+        finalGame={resolvePlaceholder(finalGame)}
         rankings={rankings}
       />
     </div>

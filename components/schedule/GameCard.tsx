@@ -8,6 +8,7 @@ interface GameCardProps {
   game: Game
   rankings?: RankingsMap
   onTap?: (game: Game) => void
+  onTeamTap?: (teamId: string) => void
 }
 
 function formatTime(datetime: string) {
@@ -22,36 +23,57 @@ function TeamDisplay({
   team,
   placeholder,
   rank,
+  onTeamTap,
 }: {
   team: Team | null
   placeholder: string | null
   rank: number | undefined
+  onTeamTap?: (teamId: string) => void
 }) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (team && onTeamTap) {
+      e.stopPropagation()
+      onTeamTap(team.id)
+    }
+  }
+
   if (!team) {
     return <span className="game-card__team-name">{placeholder ?? "TBD"}</span>
   }
 
+  const fullName = team.name
+
   if (team.short_location && team.short_name) {
     return (
-      <>
+      <span
+        className="game-card__team-wrap"
+        title={fullName}
+        onClick={handleClick}
+      >
         <span className="game-card__team-location">{team.short_location}</span>
         <span className="game-card__team-name">
           {team.short_name}
           {rank != null && <span className="game-card__rank"> #{rank}</span>}
         </span>
-      </>
+      </span>
     )
   }
 
   return (
-    <span className="game-card__team-name">
-      {team.name}
-      {rank != null && <span className="game-card__rank"> #{rank}</span>}
+    <span
+      className="game-card__team-wrap"
+      title={fullName}
+      onClick={handleClick}
+    >
+      <span className="game-card__team-name">
+        {team.name}
+        {rank != null && <span className="game-card__rank"> #{rank}</span>}
+      </span>
     </span>
   )
 }
 
-export function GameCard({ game, rankings, onTap }: GameCardProps) {
+export function GameCard({ game, rankings, onTap, onTeamTap }: GameCardProps) {
   const isMyTeam =
     game.home_team_id === MY_TEAM_ID || game.away_team_id === MY_TEAM_ID
   const isInProgress = game.status === "in_progress"
@@ -75,7 +97,7 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
         <span className="game-card__time">
           {formatTime(game.start_datetime)}
         </span>
-        <span className="game-card__venue">{game.venue}</span>
+        <span className="game-card__venue" title={game.venue ?? undefined}>{game.venue}</span>
         {isInProgress && (
           <span className="game-card__status-badge">
             <span className="game-card__live-dot" />
@@ -86,7 +108,7 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
 
       <div
         className={cn(
-          "game-card__team",
+          "game-card__team game-card__team--home",
           game.home_team_id === MY_TEAM_ID && "game-card__team--highlight"
         )}
       >
@@ -94,6 +116,7 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
           team={game.home_team}
           placeholder={game.home_placeholder}
           rank={homeRank}
+          onTeamTap={onTeamTap}
         />
       </div>
 
@@ -115,6 +138,7 @@ export function GameCard({ game, rankings, onTap }: GameCardProps) {
           team={game.away_team}
           placeholder={game.away_placeholder}
           rank={awayRank}
+          onTeamTap={onTeamTap}
         />
       </div>
     </button>

@@ -122,7 +122,32 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: url("/images/stat_back.png");
+    background-size: cover;
+    background-position: center top;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
+}
+
+/* ============================================
+   Shared Page Brand Header
+   ============================================ */
+
+.page-brand-row {
+  @apply flex items-baseline gap-2;
+}
+
+.page-brand {
+  @apply text-2xl font-bold leading-tight;
+}
+
+.page-tagline {
+  @apply text-sm text-muted-foreground tracking-wide;
+}
+
+.page-tournament {
+  @apply text-sm text-muted-foreground/70 mt-0.5;
 }
 
 /* ============================================
@@ -133,8 +158,14 @@
   @apply min-h-screen pb-20 lg:pb-6;
 }
 
-.schedule-header {
-  @apply sticky top-0 z-10 bg-background border-b px-4 py-3 lg:top-[53px];
+.schedule-nav {
+  @apply sticky top-0 z-10 border-b lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
+}
+
+.schedule-nav__header {
+  @apply px-4 pt-3 pb-1;
 }
 
 .schedule-title {
@@ -149,21 +180,57 @@
   @apply flex flex-col gap-2 p-4;
 }
 
+[data-game-card] {
+  scroll-margin-top: 12rem;
+}
+
+.scroll-indicator {
+  @apply fixed left-1/2 -translate-x-1/2 z-20
+         text-[11px] px-3 py-1 rounded-full
+         bg-foreground/75 text-background
+         backdrop-blur-sm shadow-md
+         pointer-events-none
+         flex items-center gap-1;
+}
+
+.scroll-indicator--above {
+  @apply top-48 lg:top-56;
+}
+
+.scroll-indicator--below {
+  @apply bottom-24 lg:bottom-8;
+}
+
+.scroll-indicator__arrow {
+  @apply text-[10px] leading-none;
+}
+
 .game-card {
-  @apply relative grid grid-cols-[auto_1fr_auto_1fr] items-center gap-x-3 gap-y-0
-         rounded-lg border p-3 transition-colors;
+  @apply relative w-full grid grid-cols-[auto_1fr_auto_1fr] items-center gap-x-3 gap-y-0
+         rounded-lg border p-3 transition-colors text-left;
+  background: oklch(0.22 0 0 / 0.92);
+  backdrop-filter: blur(8px);
 }
 
 .game-card--my-team {
-  @apply border-l-4 border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20;
+  @apply border-l-4 border-l-red-500;
 }
 
 .game-card--in-progress {
-  @apply border-yellow-400 bg-yellow-50/50 dark:bg-yellow-950/20;
+  @apply border-yellow-400;
+  background: oklch(0.7 0.15 85 / 0.12);
 }
 
 .game-card--completed {
-  @apply opacity-80;
+  @apply opacity-70 grayscale-[20%];
+}
+
+.game-card--my-team.game-card--completed {
+  @apply opacity-90 grayscale-0;
+}
+
+.game-card--completed .game-card__score {
+  @apply text-sm font-semibold text-muted-foreground;
 }
 
 .game-card__info {
@@ -171,39 +238,61 @@
 }
 
 .game-card__venue {
-  @apply text-xs text-muted-foreground truncate;
+  @apply text-xs text-foreground/50 truncate block;
+  max-width: 8ch;
 }
 
 .game-card__team {
-  @apply flex flex-col items-start text-center;
+  @apply flex flex-col items-start min-w-0;
+}
+
+.game-card__team--home {
+  @apply items-end;
+}
+
+.game-card__team--home .game-card__team-wrap {
+  @apply items-end;
+}
+
+.game-card__team--home .game-card__team-location,
+.game-card__team--home .game-card__team-name {
+  @apply text-right;
 }
 
 .game-card__team--highlight .game-card__team-name {
-  @apply text-blue-600 dark:text-blue-400;
+  @apply text-red-400;
+}
+
+.game-card__team--highlight .game-card__team-location {
+  @apply text-red-400;
+}
+
+.game-card__team-wrap {
+  @apply flex flex-col min-w-0 max-w-full;
 }
 
 .game-card__team-location {
-  @apply text-sm font-semibold leading-tight;
+  @apply text-sm font-semibold leading-tight text-foreground truncate;
 }
 
 .game-card__team-name {
-  @apply text-sm font-semibold leading-tight;
+  @apply text-sm font-semibold leading-tight text-foreground truncate;
 }
 
 .game-card__rank {
-  @apply text-[10px] text-muted-foreground font-normal ml-0.5;
+  @apply text-[10px] text-foreground/40 font-normal ml-0.5;
 }
 
 .game-card__vs {
-  @apply text-xs text-muted-foreground text-center;
+  @apply text-base font-semibold text-foreground/40 text-center;
 }
 
 .game-card__score {
-  @apply text-lg font-bold tabular-nums text-center;
+  @apply text-lg font-bold tabular-nums text-center text-foreground;
 }
 
 .game-card__time {
-  @apply text-sm font-semibold leading-tight;
+  @apply text-sm font-semibold leading-tight text-foreground;
 }
 
 .game-card__status-badge {
@@ -228,7 +317,9 @@
 
 .bottom-nav {
   @apply fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around
-         border-t bg-background px-2 py-2 lg:hidden;
+         border-t px-2 py-2 lg:hidden;
+  background: oklch(0.145 0 0 / 0.8);
+  backdrop-filter: blur(14px);
 }
 
 .bottom-nav__item {
@@ -250,11 +341,21 @@
 
 .top-nav {
   @apply hidden lg:flex items-center justify-between
-         border-b bg-background px-6 py-3 sticky top-0 z-50;
+         border-b px-6 py-3 sticky top-0 z-50;
+  background: oklch(0.145 0 0 / 0.8);
+  backdrop-filter: blur(14px);
 }
 
 .top-nav__brand {
+  @apply flex items-baseline leading-none;
+}
+
+.top-nav__brand-name {
   @apply text-xl font-bold tracking-tight;
+}
+
+.top-nav__brand-tagline {
+  @apply text-[10px] text-muted-foreground tracking-wide;
 }
 
 .top-nav__links {
@@ -276,6 +377,93 @@
 }
 
 /* ============================================
+   Team Games Sheet
+   ============================================ */
+
+.team-games-sheet {
+  @apply max-h-[80vh] overflow-y-auto px-5;
+}
+
+.team-games {
+  @apply flex flex-col gap-2 py-4;
+}
+
+.team-games__empty {
+  @apply text-center text-muted-foreground py-8;
+}
+
+.team-game-row {
+  @apply flex items-center gap-3 rounded-lg px-4 py-3;
+  background: oklch(0.22 0 0 / 0.9);
+}
+
+.team-game-row__meta {
+  @apply flex flex-col shrink-0;
+  min-width: 5rem;
+}
+
+.team-game-row__date {
+  @apply text-xs text-muted-foreground;
+}
+
+.team-game-row__time {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.team-game-row__side {
+  @apply text-xs text-muted-foreground font-medium shrink-0;
+  min-width: 1.5rem;
+}
+
+.team-game-row__opponent {
+  @apply flex flex-col flex-1 min-w-0;
+}
+
+.team-game-row__opp-location {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.team-game-row__opp-name {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.team-game-row__rank {
+  @apply text-[10px] text-foreground/40 font-normal ml-0.5;
+}
+
+.team-game-row__result {
+  @apply flex flex-col items-end shrink-0;
+}
+
+.team-game-row__score {
+  @apply text-sm font-bold tabular-nums text-foreground;
+}
+
+.team-game-row__score--win {
+  @apply text-green-400;
+}
+
+.team-game-row__score--loss {
+  @apply text-red-400;
+}
+
+.team-game-row__wl {
+  @apply text-xs font-bold;
+}
+
+.team-game-row__wl--win {
+  @apply text-green-400;
+}
+
+.team-game-row__wl--loss {
+  @apply text-red-400;
+}
+
+.team-game-row__upcoming {
+  @apply text-sm text-muted-foreground;
+}
+
+/* ============================================
    App Content Wrapper
    ============================================ */
 
@@ -287,8 +475,25 @@
    Score Entry Styles
    ============================================ */
 
+.score-entry__sheet {
+  @apply max-h-[85vh] overflow-y-auto px-5;
+}
+
 .score-entry {
-  @apply flex flex-col gap-6 py-4;
+  @apply flex flex-col gap-5 py-4 pb-0;
+}
+
+.score-entry__details-toggle {
+  @apply text-sm text-muted-foreground tracking-wide text-center py-2 rounded-md;
+  transition: color 0.15s;
+}
+.score-entry__details-toggle:hover {
+  @apply text-foreground;
+}
+
+.score-entry__details {
+  @apply flex flex-col gap-5 rounded-lg p-4;
+  background: oklch(0.18 0 0 / 0.6);
 }
 
 .score-entry__teams {
@@ -297,6 +502,11 @@
 
 .score-entry__team-col {
   @apply flex flex-1 flex-col items-center gap-2;
+}
+
+.score-entry__team-location {
+  @apply text-xs font-medium text-muted-foreground truncate text-center;
+  max-width: 14ch;
 }
 
 .score-entry__team-name {
@@ -335,6 +545,10 @@
   @apply h-10 w-16 text-center text-lg tabular-nums;
 }
 
+.score-entry__periods-grid {
+  @apply flex flex-col gap-2;
+}
+
 .score-entry__stat-row {
   @apply flex items-center gap-3;
 }
@@ -359,8 +573,26 @@
   @apply text-muted-foreground font-bold;
 }
 
+.score-entry__result-buttons {
+  @apply flex gap-2 flex-wrap;
+}
+
 .score-entry__actions {
-  @apply flex flex-col gap-2 pt-2;
+  @apply sticky bottom-0 py-3 -mx-5 px-5;
+  background: oklch(0.145 0 0 / 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.score-entry__save-btn {
+  @apply w-full text-base font-semibold py-6;
+  transition: background-color 0.25s, box-shadow 0.25s;
+}
+.score-entry__save-btn--dirty {
+  background-color: oklch(0.55 0.2 350) !important;
+  box-shadow: 0 0 18px oklch(0.55 0.2 350 / 0.4);
+}
+.score-entry__save-btn--dirty:hover {
+  background-color: oklch(0.5 0.22 350) !important;
 }
 
 .score-entry__warning {
@@ -376,7 +608,17 @@
 }
 
 .standings-header {
-  @apply sticky top-0 z-10 bg-background border-b px-4 py-3 lg:top-[53px];
+  @apply sticky top-0 z-10 border-b px-4 py-3 lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
+}
+
+.standings-link {
+  @apply inline-block text-xs mt-1 underline underline-offset-2;
+  color: oklch(0.7 0.15 350);
+}
+.standings-link:hover {
+  color: oklch(0.8 0.18 350);
 }
 
 .standings-title {
@@ -387,12 +629,23 @@
   @apply px-4 py-4;
 }
 
+.standings-pool__header {
+  @apply flex items-center justify-between mb-3;
+}
+
 .standings-pool__title {
-  @apply text-base font-bold mb-3;
+  @apply text-base font-bold;
+}
+
+.standings-details-toggle {
+  @apply text-xs text-muted-foreground underline underline-offset-2
+         hover:text-foreground transition-colors cursor-pointer;
 }
 
 .standings-table-wrap {
-  @apply overflow-x-auto -mx-4 px-4;
+  @apply overflow-x-auto -mx-4 px-4 rounded-lg;
+  background: oklch(0.145 0 0 / 0.6);
+  backdrop-filter: blur(6px);
 }
 
 .standings-table {
@@ -421,35 +674,76 @@
 }
 
 .standings-row--my-team {
-  @apply bg-blue-50/50 dark:bg-blue-950/20 font-semibold;
+  @apply bg-red-50/50 dark:bg-red-950/20 font-semibold;
+}
+
+.standings-row--my-team .standings-row__team-name {
+  @apply text-red-600 dark:text-red-400;
 }
 
 .standings-row--advancing {
   @apply border-l-2 border-l-green-500;
 }
 
-.standings-row__team-cell {
-  @apply flex items-center gap-2;
-}
-
-.standings-row__rank {
-  @apply text-muted-foreground text-xs w-4 shrink-0;
+.standings-cell--team {
+  text-align: left;
 }
 
 .standings-row__team-name {
-  @apply truncate max-w-[140px];
+  @apply block truncate;
+  max-width: 15ch;
 }
 
-.standings-row__tiebreaker {
-  @apply text-[10px] text-muted-foreground ml-1;
+.standings-row__prov-rank {
+  @apply text-xs text-muted-foreground;
 }
 
-.standings-row__coin-toss {
-  @apply text-[10px] text-yellow-600 dark:text-yellow-400 ml-1;
+.standings-cell--pts {
+  @apply font-bold;
 }
 
-.standings-row__rank {
-  @apply text-[10px] text-muted-foreground;
+/* Detail columns — collapsed by default, slide open when expanded */
+.standings-table .standings-detail-cell {
+  max-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 0.3s ease, padding 0.3s ease, opacity 0.25s ease;
+}
+
+.standings-table.standings-table--expanded .standings-detail-cell {
+  max-width: 5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  opacity: 1;
+}
+
+/* ============================================
+   Misc Page Styles
+   ============================================ */
+
+.misc-page {
+  @apply min-h-screen pb-20 lg:pb-6;
+}
+
+.misc-header {
+  @apply sticky top-0 z-10 border-b px-4 py-3 lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
+}
+
+.misc-title {
+  @apply text-lg font-bold;
+}
+
+.misc-tabs {
+  @apply px-4 py-2;
+}
+
+.misc-import-wrap {
+  @apply px-4 py-4;
 }
 
 /* ============================================
@@ -461,7 +755,9 @@
 }
 
 .bracket-header {
-  @apply sticky top-0 z-10 bg-background border-b px-4 py-3 lg:top-[53px];
+  @apply sticky top-0 z-10 border-b px-4 py-3 lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
 }
 
 .bracket-title {
@@ -469,27 +765,29 @@
 }
 
 .bracket-container {
-  @apply flex flex-col items-center gap-6 p-4;
+  @apply flex flex-col items-center gap-2 p-6;
 }
 
 .bracket-round {
-  @apply w-full max-w-md;
+  @apply w-full max-w-lg;
 }
 
 .bracket-round__title {
-  @apply text-sm font-semibold text-muted-foreground text-center mb-3;
+  @apply text-lg font-bold text-foreground text-center mb-2;
 }
 
 .bracket-game {
-  @apply rounded-lg border overflow-hidden;
+  @apply rounded-xl border overflow-hidden;
+  background: oklch(0.25 0 0 / 0.9);
+  backdrop-filter: blur(8px);
 }
 
 .bracket-game--my-team {
-  @apply border-blue-500;
+  @apply border-red-500;
 }
 
 .bracket-team-row {
-  @apply flex items-center justify-between px-3 py-2.5 text-sm;
+  @apply flex items-center justify-between px-5 py-4 text-base;
 }
 
 .bracket-team-row:first-child {
@@ -501,19 +799,20 @@
 }
 
 .bracket-team-row--my-team {
-  @apply bg-blue-50/50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 font-bold;
+  @apply font-bold text-red-400;
+  background: oklch(0.6 0.15 350 / 0.1);
 }
 
 .bracket-team-name {
-  @apply truncate flex-1;
+  @apply truncate flex-1 text-foreground;
 }
 
 .bracket-team-rank {
-  @apply text-[10px] text-muted-foreground font-normal ml-1;
+  @apply text-xs text-muted-foreground font-normal ml-1;
 }
 
 .bracket-team-score {
-  @apply text-lg font-bold tabular-nums ml-3;
+  @apply text-xl font-bold tabular-nums ml-4 text-foreground;
 }
 
 .bracket-connector {
@@ -525,7 +824,7 @@
 }
 
 .bracket-tbd {
-  @apply text-muted-foreground italic;
+  @apply text-muted-foreground italic text-base;
 }
 
 /* ============================================
@@ -537,7 +836,9 @@
 }
 
 .import-header {
-  @apply sticky top-0 z-10 bg-background border-b px-4 py-3 lg:top-[53px];
+  @apply sticky top-0 z-10 border-b px-4 py-3 lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
 }
 
 .import-title {
@@ -545,7 +846,8 @@
 }
 
 .import-content {
-  @apply p-4 flex flex-col gap-6;
+  @apply p-4 flex flex-col gap-6 rounded-lg;
+  background: oklch(0.2 0 0 / 0.9);
 }
 
 .import-step {
@@ -553,13 +855,14 @@
 }
 
 .import-step__label {
-  @apply text-sm font-semibold text-muted-foreground;
+  @apply text-sm font-semibold text-foreground;
 }
 
 .import-dropzone {
   @apply flex flex-col items-center justify-center gap-2 rounded-lg border-2
          border-dashed p-8 text-center cursor-pointer transition-colors
-         hover:border-primary/50 hover:bg-muted/50;
+         hover:border-primary/50;
+  background: oklch(0.25 0 0 / 0.9);
 }
 
 .import-dropzone--active {
@@ -571,7 +874,7 @@
 }
 
 .import-dropzone__text {
-  @apply text-sm text-muted-foreground;
+  @apply text-sm text-foreground/70;
 }
 
 .import-dropzone__filename {
@@ -615,57 +918,81 @@
    ============================================ */
 
 .chat-page {
-  @apply min-h-screen pb-20 lg:pb-6 flex flex-col;
+  @apply min-h-screen pb-20 lg:pb-6 flex flex-col relative;
+  background: url("/images/chadio_background.png") center top / 100% auto no-repeat;
+}
+
+.chat-page::after {
+  content: "";
+  @apply absolute inset-0 pointer-events-none;
+  background: linear-gradient(to top, oklch(0.15 0 0 / 0.92) 0%, oklch(0.15 0 0 / 0.6) 50%, transparent 100%);
 }
 
 .chat-header {
-  @apply sticky top-0 z-10 bg-background border-b px-4 py-3 lg:top-[53px];
+  @apply sticky top-0 z-20 border-b px-4 py-3 lg:top-[53px];
+  background: oklch(0.15 0 0 / 0.7);
+  backdrop-filter: blur(12px);
 }
 
 .chat-title {
-  @apply text-lg font-bold;
+  @apply text-lg font-bold text-white leading-tight;
+}
+
+.chat-tagline {
+  @apply text-[10px] text-white/50 tracking-wide;
 }
 
 .chat-messages {
-  @apply flex-1 flex flex-col gap-3 p-4 overflow-y-auto;
+  @apply flex-1 flex flex-col justify-end gap-3 p-4 overflow-y-auto relative z-10;
+  padding-bottom: 4.5rem;
 }
 
 .chat-messages--empty {
-  @apply items-center justify-center text-center;
+  @apply justify-center items-center text-center;
 }
 
 .chat-empty__icon {
-  @apply h-12 w-12 text-muted-foreground/30;
+  @apply h-12 w-12 text-white/20;
 }
 
 .chat-empty__text {
-  @apply text-sm text-muted-foreground mt-2;
+  @apply text-sm text-white/60 mt-2;
 }
 
 .chat-bubble {
-  @apply max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed;
+  @apply max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-lg;
 }
 
 .chat-bubble--user {
-  @apply self-end bg-primary text-primary-foreground rounded-br-sm;
+  @apply self-end rounded-br-sm text-white;
+  background: oklch(0.55 0.2 350);
 }
 
 .chat-bubble--assistant {
-  @apply self-start bg-muted rounded-bl-sm;
+  @apply self-start rounded-bl-sm text-white;
+  background: oklch(0.45 0.15 350 / 0.85);
+  backdrop-filter: blur(8px);
 }
 
 .chat-bubble--thinking {
-  @apply self-start bg-muted text-muted-foreground italic;
+  @apply self-start italic text-white/50;
+  background: oklch(0.25 0.01 260 / 0.6);
+  backdrop-filter: blur(8px);
 }
 
 .chat-input-bar {
   @apply fixed bottom-14 left-0 right-0 z-40 flex items-end gap-2
-         border-t bg-background px-3 py-2 lg:bottom-0 lg:max-w-5xl lg:mx-auto;
+         border-t px-3 py-2 lg:bottom-0 lg:max-w-5xl lg:mx-auto;
+  background: oklch(0.12 0 0 / 0.85);
+  backdrop-filter: blur(16px);
+  border-color: oklch(1 0 0 / 0.1);
 }
 
 .chat-input {
-  @apply flex-1 resize-none rounded-2xl border bg-muted/50 px-4 py-2.5
-         text-sm max-h-32 min-h-[2.5rem];
+  @apply flex-1 resize-none rounded-2xl border px-4 py-2.5
+         text-sm max-h-32 min-h-[2.5rem] text-white placeholder-white/40;
+  background: oklch(0.2 0 0 / 0.6);
+  border-color: oklch(1 0 0 / 0.1);
 }
 
 .chat-send-btn {

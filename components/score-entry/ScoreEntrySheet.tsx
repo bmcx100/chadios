@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import {
   Sheet,
   SheetContent,
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
 import type { Game, RankingsMap } from "@/lib/types"
 
 interface ScoreEntrySheetProps {
@@ -19,6 +20,21 @@ interface ScoreEntrySheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSaved?: () => void
+}
+
+interface InitialValues {
+  homeScore: string
+  awayScore: string
+  homePeriods: string[]
+  awayPeriods: string[]
+  homePims: string
+  awayPims: string
+  homeFirstGoalMin: string
+  homeFirstGoalSec: string
+  awayFirstGoalMin: string
+  awayFirstGoalSec: string
+  resultType: string
+  otWinner: "home" | "away" | ""
 }
 
 export function ScoreEntrySheet({
@@ -30,7 +46,7 @@ export function ScoreEntrySheet({
 }: ScoreEntrySheetProps) {
   const [homeScore, setHomeScore] = useState("")
   const [awayScore, setAwayScore] = useState("")
-  const [showPeriods, setShowPeriods] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
   const [homePeriods, setHomePeriods] = useState(["", "", ""])
   const [awayPeriods, setAwayPeriods] = useState(["", "", ""])
   const [homePims, setHomePims] = useState("")
@@ -44,59 +60,93 @@ export function ScoreEntrySheet({
   const [saving, setSaving] = useState(false)
   const [periodWarning, setPeriodWarning] = useState("")
 
-  const isElimination =
-    game?.stage === "semifinal" ||
-    game?.stage === "final" ||
-    game?.stage === "quarterfinal"
+  const initialRef = useRef<InitialValues | null>(null)
 
   useEffect(() => {
     if (game) {
-      setHomeScore(game.final_score_home?.toString() ?? "")
-      setAwayScore(game.final_score_away?.toString() ?? "")
-      setHomePeriods(
-        game.goals_by_period_home?.map(String) ?? ["", "", ""]
-      )
-      setAwayPeriods(
-        game.goals_by_period_away?.map(String) ?? ["", "", ""]
-      )
-      setHomePims(game.penalty_minutes_home?.toString() ?? "")
-      setAwayPims(game.penalty_minutes_away?.toString() ?? "")
-      setResultType(game.result_type ?? "regulation")
-      setShowPeriods(!!game.goals_by_period_home)
+      const hs = game.final_score_home?.toString() ?? ""
+      const as_ = game.final_score_away?.toString() ?? ""
+      const hp = game.goals_by_period_home?.map(String) ?? ["", "", ""]
+      const ap = game.goals_by_period_away?.map(String) ?? ["", "", ""]
+      const hPims = game.penalty_minutes_home?.toString() ?? ""
+      const aPims = game.penalty_minutes_away?.toString() ?? ""
+      const rt = game.result_type ?? "regulation"
 
-      if (game.overtime_winner_team_id === game.home_team_id) setOtWinner("home")
-      else if (game.overtime_winner_team_id === game.away_team_id) setOtWinner("away")
-      else if (game.shootout_winner_team_id === game.home_team_id) setOtWinner("home")
-      else if (game.shootout_winner_team_id === game.away_team_id) setOtWinner("away")
-      else setOtWinner("")
+      let ow: "home" | "away" | "" = ""
+      if (game.overtime_winner_team_id === game.home_team_id) ow = "home"
+      else if (game.overtime_winner_team_id === game.away_team_id) ow = "away"
+      else if (game.shootout_winner_team_id === game.home_team_id) ow = "home"
+      else if (game.shootout_winner_team_id === game.away_team_id) ow = "away"
 
+      let hfgMin = ""
+      let hfgSec = ""
       if (game.fastest_goal_seconds_home != null) {
-        setHomeFirstGoalMin(
-          Math.floor(game.fastest_goal_seconds_home / 60).toString()
-        )
-        setHomeFirstGoalSec(
-          (game.fastest_goal_seconds_home % 60).toString().padStart(2, "0")
-        )
-      } else {
-        setHomeFirstGoalMin("")
-        setHomeFirstGoalSec("")
+        hfgMin = Math.floor(game.fastest_goal_seconds_home / 60).toString()
+        hfgSec = (game.fastest_goal_seconds_home % 60).toString().padStart(2, "0")
       }
+      let afgMin = ""
+      let afgSec = ""
       if (game.fastest_goal_seconds_away != null) {
-        setAwayFirstGoalMin(
-          Math.floor(game.fastest_goal_seconds_away / 60).toString()
-        )
-        setAwayFirstGoalSec(
-          (game.fastest_goal_seconds_away % 60).toString().padStart(2, "0")
-        )
-      } else {
-        setAwayFirstGoalMin("")
-        setAwayFirstGoalSec("")
+        afgMin = Math.floor(game.fastest_goal_seconds_away / 60).toString()
+        afgSec = (game.fastest_goal_seconds_away % 60).toString().padStart(2, "0")
+      }
+
+      setHomeScore(hs)
+      setAwayScore(as_)
+      setHomePeriods(hp)
+      setAwayPeriods(ap)
+      setHomePims(hPims)
+      setAwayPims(aPims)
+      setResultType(rt)
+      setOtWinner(ow)
+      setHomeFirstGoalMin(hfgMin)
+      setHomeFirstGoalSec(hfgSec)
+      setAwayFirstGoalMin(afgMin)
+      setAwayFirstGoalSec(afgSec)
+      setShowDetails(false)
+
+      initialRef.current = {
+        homeScore: hs,
+        awayScore: as_,
+        homePeriods: [...hp],
+        awayPeriods: [...ap],
+        homePims: hPims,
+        awayPims: aPims,
+        homeFirstGoalMin: hfgMin,
+        homeFirstGoalSec: hfgSec,
+        awayFirstGoalMin: afgMin,
+        awayFirstGoalSec: afgSec,
+        resultType: rt,
+        otWinner: ow,
       }
     }
   }, [game])
 
+  const isDirty = useMemo(() => {
+    const init = initialRef.current
+    if (!init) return false
+    return (
+      homeScore !== init.homeScore ||
+      awayScore !== init.awayScore ||
+      homePims !== init.homePims ||
+      awayPims !== init.awayPims ||
+      homeFirstGoalMin !== init.homeFirstGoalMin ||
+      homeFirstGoalSec !== init.homeFirstGoalSec ||
+      awayFirstGoalMin !== init.awayFirstGoalMin ||
+      awayFirstGoalSec !== init.awayFirstGoalSec ||
+      resultType !== init.resultType ||
+      otWinner !== init.otWinner ||
+      homePeriods.some((v, i) => v !== init.homePeriods[i]) ||
+      awayPeriods.some((v, i) => v !== init.awayPeriods[i])
+    )
+  }, [
+    homeScore, awayScore, homePims, awayPims,
+    homeFirstGoalMin, homeFirstGoalSec, awayFirstGoalMin, awayFirstGoalSec,
+    resultType, otWinner, homePeriods, awayPeriods,
+  ])
+
   useEffect(() => {
-    if (!showPeriods || !homeScore || !awayScore) {
+    if (!showDetails || !homeScore || !awayScore) {
       setPeriodWarning("")
       return
     }
@@ -111,12 +161,16 @@ export function ScoreEntrySheet({
     } else {
       setPeriodWarning("")
     }
-  }, [homeScore, awayScore, homePeriods, awayPeriods, showPeriods])
+  }, [homeScore, awayScore, homePeriods, awayPeriods, showDetails])
 
   if (!game) return null
 
-  const homeName = game.home_team?.name ?? game.home_placeholder ?? "Home"
-  const awayName = game.away_team?.name ?? game.away_placeholder ?? "Away"
+  const homeFull = game.home_team?.name ?? game.home_placeholder ?? "Home"
+  const awayFull = game.away_team?.name ?? game.away_placeholder ?? "Away"
+  const homeLoc = game.home_team?.short_location ?? null
+  const homeShort = game.home_team?.short_name ?? homeFull
+  const awayLoc = game.away_team?.short_location ?? null
+  const awayShort = game.away_team?.short_name ?? awayFull
   const homeRank = game.home_team_id ? rankings?.[game.home_team_id] : undefined
   const awayRank = game.away_team_id ? rankings?.[game.away_team_id] : undefined
 
@@ -127,26 +181,13 @@ export function ScoreEntrySheet({
     return (isNaN(m) ? 0 : m) * 60 + (isNaN(s) ? 0 : s)
   }
 
-  async function handleMarkInProgress() {
-    setSaving(true)
-    const supabase = createClient()
-    await supabase
-      .from("games")
-      .update({ status: "in_progress", updated_at: new Date().toISOString() })
-      .eq("id", game!.id)
-    setSaving(false)
-    onSaved?.()
-    onOpenChange(false)
-  }
-
   async function handleSaveScore() {
     if (!homeScore || !awayScore) return
     setSaving(true)
     const supabase = createClient()
 
     const hasPeriodData =
-      showPeriods &&
-      (homePeriods.some((v) => v !== "") || awayPeriods.some((v) => v !== ""))
+      homePeriods.some((v) => v !== "") || awayPeriods.some((v) => v !== "")
 
     const update: Record<string, unknown> = {
       final_score_home: parseInt(homeScore),
@@ -207,7 +248,7 @@ export function ScoreEntrySheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
+      <SheetContent side="bottom" className="score-entry__sheet">
         <SheetHeader>
           <SheetTitle>
             {game.status === "completed" ? "Edit Score" : "Enter Score"}
@@ -215,11 +256,146 @@ export function ScoreEntrySheet({
         </SheetHeader>
 
         <div className="score-entry">
-          {/* Final Score */}
+          {/* Collapsible Details Toggle */}
+          <button
+            type="button"
+            className="score-entry__details-toggle"
+            onClick={() => setShowDetails(!showDetails)}
+          >
+            {showDetails ? "Hide details" : "More details ···"}
+          </button>
+
+          {/* Collapsible Details */}
+          {showDetails && (
+            <div className="score-entry__details">
+              {/* Period Scores */}
+              <div className="score-entry__section">
+                <span className="score-entry__section-title">Period Scores</span>
+                <div className="score-entry__periods-grid">
+                  {["P1", "P2", "P3"].map((label, i) => (
+                    <div key={label} className="score-entry__period-row">
+                      <span className="score-entry__period-label">{label}</span>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={homePeriods[i]}
+                        onChange={(e) => updatePeriod("home", i, e.target.value)}
+                        className="score-entry__period-input"
+                        placeholder="0"
+                      />
+                      <span className="score-entry__divider">-</span>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={awayPeriods[i]}
+                        onChange={(e) => updatePeriod("away", i, e.target.value)}
+                        className="score-entry__period-input"
+                        placeholder="0"
+                      />
+                    </div>
+                  ))}
+                  {periodWarning && (
+                    <p className="score-entry__warning">{periodWarning}</p>
+                  )}
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Penalty Minutes */}
+              <div className="score-entry__section">
+                <span className="score-entry__section-title">
+                  Penalty Minutes
+                </span>
+                <div className="score-entry__stat-row">
+                  <span className="score-entry__stat-label" title={homeFull}>{homeShort}</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={homePims}
+                    onChange={(e) => setHomePims(e.target.value)}
+                    className="score-entry__stat-input"
+                    placeholder="0"
+                  />
+                </div>
+                <div className="score-entry__stat-row">
+                  <span className="score-entry__stat-label" title={awayFull}>{awayShort}</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={awayPims}
+                    onChange={(e) => setAwayPims(e.target.value)}
+                    className="score-entry__stat-input"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* First Goal Time */}
+              <div className="score-entry__section">
+                <span className="score-entry__section-title">
+                  First Goal Time
+                </span>
+                <div className="score-entry__stat-row">
+                  <span className="score-entry__stat-label" title={homeFull}>{homeShort}</span>
+                  <div className="score-entry__time-group">
+                    <Input
+                      type="number"
+                      min="0"
+                      value={homeFirstGoalMin}
+                      onChange={(e) => setHomeFirstGoalMin(e.target.value)}
+                      className="score-entry__time-input"
+                      placeholder="mm"
+                    />
+                    <span className="score-entry__time-sep">:</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={homeFirstGoalSec}
+                      onChange={(e) => setHomeFirstGoalSec(e.target.value)}
+                      className="score-entry__time-input"
+                      placeholder="ss"
+                    />
+                  </div>
+                </div>
+                <div className="score-entry__stat-row">
+                  <span className="score-entry__stat-label" title={awayFull}>{awayShort}</span>
+                  <div className="score-entry__time-group">
+                    <Input
+                      type="number"
+                      min="0"
+                      value={awayFirstGoalMin}
+                      onChange={(e) => setAwayFirstGoalMin(e.target.value)}
+                      className="score-entry__time-input"
+                      placeholder="mm"
+                    />
+                    <span className="score-entry__time-sep">:</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={awayFirstGoalSec}
+                      onChange={(e) => setAwayFirstGoalSec(e.target.value)}
+                      className="score-entry__time-input"
+                      placeholder="ss"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Final Score — always visible above save */}
           <div className="score-entry__teams">
-            <div className="score-entry__team-col">
+            <div className="score-entry__team-col" title={homeFull}>
+              {homeLoc && (
+                <span className="score-entry__team-location">{homeLoc}</span>
+              )}
               <span className="score-entry__team-name">
-                {homeName}
+                {homeShort}
                 {homeRank != null && (
                   <span className="score-entry__team-rank"> #{homeRank}</span>
                 )}
@@ -234,9 +410,12 @@ export function ScoreEntrySheet({
               />
             </div>
             <span className="score-entry__divider">-</span>
-            <div className="score-entry__team-col">
+            <div className="score-entry__team-col" title={awayFull}>
+              {awayLoc && (
+                <span className="score-entry__team-location">{awayLoc}</span>
+              )}
               <span className="score-entry__team-name">
-                {awayName}
+                {awayShort}
                 {awayRank != null && (
                   <span className="score-entry__team-rank"> #{awayRank}</span>
                 )}
@@ -252,197 +431,13 @@ export function ScoreEntrySheet({
             </div>
           </div>
 
-          <Separator />
-
-          {/* Period Scores */}
-          <div className="score-entry__section">
-            <button
-              type="button"
-              className="score-entry__section-title"
-              onClick={() => setShowPeriods(!showPeriods)}
-            >
-              Period Scores {showPeriods ? "▲" : "▼"}
-            </button>
-
-            {showPeriods && (
-              <div className="flex flex-col gap-2">
-                {["P1", "P2", "P3"].map((label, i) => (
-                  <div key={label} className="score-entry__period-row">
-                    <span className="score-entry__period-label">{label}</span>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={homePeriods[i]}
-                      onChange={(e) => updatePeriod("home", i, e.target.value)}
-                      className="score-entry__period-input"
-                      placeholder="0"
-                    />
-                    <span className="score-entry__divider">-</span>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={awayPeriods[i]}
-                      onChange={(e) => updatePeriod("away", i, e.target.value)}
-                      className="score-entry__period-input"
-                      placeholder="0"
-                    />
-                  </div>
-                ))}
-                {periodWarning && (
-                  <p className="score-entry__warning">{periodWarning}</p>
-                )}
-              </div>
-            )}
-          </div>
-
-          <Separator />
-
-          {/* Penalty Minutes */}
-          <div className="score-entry__section">
-            <span className="score-entry__section-title">
-              Penalty Minutes (optional)
-            </span>
-            <div className="score-entry__stat-row">
-              <span className="score-entry__stat-label">{homeName}</span>
-              <Input
-                type="number"
-                min="0"
-                value={homePims}
-                onChange={(e) => setHomePims(e.target.value)}
-                className="score-entry__stat-input"
-                placeholder="0"
-              />
-            </div>
-            <div className="score-entry__stat-row">
-              <span className="score-entry__stat-label">{awayName}</span>
-              <Input
-                type="number"
-                min="0"
-                value={awayPims}
-                onChange={(e) => setAwayPims(e.target.value)}
-                className="score-entry__stat-input"
-                placeholder="0"
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Fastest First Goal */}
-          <div className="score-entry__section">
-            <span className="score-entry__section-title">
-              First Goal Time (optional)
-            </span>
-            <div className="score-entry__stat-row">
-              <span className="score-entry__stat-label">{homeName}</span>
-              <div className="score-entry__time-group">
-                <Input
-                  type="number"
-                  min="0"
-                  value={homeFirstGoalMin}
-                  onChange={(e) => setHomeFirstGoalMin(e.target.value)}
-                  className="score-entry__time-input"
-                  placeholder="mm"
-                />
-                <span className="score-entry__time-sep">:</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="59"
-                  value={homeFirstGoalSec}
-                  onChange={(e) => setHomeFirstGoalSec(e.target.value)}
-                  className="score-entry__time-input"
-                  placeholder="ss"
-                />
-              </div>
-            </div>
-            <div className="score-entry__stat-row">
-              <span className="score-entry__stat-label">{awayName}</span>
-              <div className="score-entry__time-group">
-                <Input
-                  type="number"
-                  min="0"
-                  value={awayFirstGoalMin}
-                  onChange={(e) => setAwayFirstGoalMin(e.target.value)}
-                  className="score-entry__time-input"
-                  placeholder="mm"
-                />
-                <span className="score-entry__time-sep">:</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="59"
-                  value={awayFirstGoalSec}
-                  onChange={(e) => setAwayFirstGoalSec(e.target.value)}
-                  className="score-entry__time-input"
-                  placeholder="ss"
-                />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Result Type */}
-          <div className="score-entry__section">
-            <span className="score-entry__section-title">Result Type</span>
-            <div className="flex gap-2 flex-wrap">
-              {["regulation", "forfeit", ...(isElimination ? ["overtime", "shootout"] : [])].map(
-                (type) => (
-                  <Button
-                    key={type}
-                    variant={resultType === type ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      setResultType(type)
-                      if (type !== "overtime" && type !== "shootout") setOtWinner("")
-                    }}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </Button>
-                )
-              )}
-            </div>
-
-            {(resultType === "overtime" || resultType === "shootout") && (
-              <div className="score-entry__section">
-                <span className="score-entry__section-title">
-                  {resultType === "overtime" ? "OT" : "Shootout"} Winner
-                </span>
-                <div className="flex gap-2">
-                  <Button
-                    variant={otWinner === "home" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setOtWinner("home")}
-                  >
-                    {homeName}
-                  </Button>
-                  <Button
-                    variant={otWinner === "away" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setOtWinner("away")}
-                  >
-                    {awayName}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <Separator />
-
-          {/* Actions */}
+          {/* Sticky Save */}
           <div className="score-entry__actions">
-            {game.status === "scheduled" && (
-              <Button
-                variant="outline"
-                onClick={handleMarkInProgress}
-                disabled={saving}
-              >
-                Mark In Progress
-              </Button>
-            )}
             <Button
+              className={cn(
+                "score-entry__save-btn",
+                isDirty && "score-entry__save-btn--dirty"
+              )}
               onClick={handleSaveScore}
               disabled={saving || !homeScore || !awayScore}
             >

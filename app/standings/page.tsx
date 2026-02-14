@@ -87,7 +87,19 @@ export default async function StandingsPage() {
   return (
     <div className="standings-page">
       <div className="standings-header">
-        <h1 className="standings-title">{tournament?.name} — Standings</h1>
+        <div className="page-brand-row">
+          <h1 className="page-brand">Chadiós</h1>
+          <span className="page-tagline">Adiós a los Datos Básicos</span>
+        </div>
+        <p className="page-tournament">{tournament?.name}</p>
+        <a
+          href="https://tournkey.app/live/2026-dwgha-bolts-and-hearts#LiveResults"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="standings-link"
+        >
+          Live Results on Tournkey
+        </a>
       </div>
 
       {poolStandings.map(({ pool, standings }) => (
