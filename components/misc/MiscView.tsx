@@ -3,6 +3,9 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { BracketView } from "@/components/bracket/BracketView"
 import { CsvImport } from "@/components/import/CsvImport"
+import { StandingsImport } from "@/components/import/StandingsImport"
+import { GamesImport } from "@/components/import/GamesImport"
+import { RankingsImport } from "@/components/import/RankingsImport"
 import type { Game, RankingsMap } from "@/lib/types"
 
 interface MiscViewProps {
@@ -21,8 +24,14 @@ export function MiscView({ semi1, semi2, finalGame, rankings }: MiscViewProps) {
             <TabsTrigger value="bracket" className="flex-1">
               Bracket
             </TabsTrigger>
+            <TabsTrigger value="standings-import" className="flex-1">
+              Standings
+            </TabsTrigger>
             <TabsTrigger value="import" className="flex-1">
-              Import
+              Games
+            </TabsTrigger>
+            <TabsTrigger value="rankings" className="flex-1">
+              Rankings
             </TabsTrigger>
           </TabsList>
         </div>
@@ -34,19 +43,27 @@ export function MiscView({ semi1, semi2, finalGame, rankings }: MiscViewProps) {
             final={finalGame}
             rankings={rankings}
           />
-          <div className="bracket-footer">
-            <hr className="bracket-gold-divider" />
-            <h2 className="bracket-gold-heading">More Gold For The Treasurer!!!</h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/hisnameis.png"
-              alt="Stat in Stand"
-              className="bracket-footer-img"
-            />
+        </TabsContent>
+
+        <TabsContent value="standings-import">
+          <div className="misc-import-wrap">
+            <StandingsImport />
           </div>
         </TabsContent>
 
         <TabsContent value="import">
+          <div className="misc-import-wrap">
+            <GamesImport />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="rankings">
+          <div className="misc-import-wrap">
+            <RankingsImport />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="csv-import">
           <div className="misc-import-wrap">
             <CsvImport />
           </div>

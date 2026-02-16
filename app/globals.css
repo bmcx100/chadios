@@ -49,45 +49,45 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.1 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.15 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.15 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.15 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.15 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+.dark {
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.1 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
@@ -106,11 +106,11 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.15 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
@@ -122,11 +122,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: url("/images/stat_back.png");
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
   }
 }
 
@@ -1015,6 +1010,93 @@
 }
 
 /* ============================================
+   Standings Import Styles
+   ============================================ */
+
+.standings-import__hint {
+  @apply text-xs text-muted-foreground mb-2;
+}
+
+.standings-import__textarea {
+  @apply w-full rounded-lg border p-3 text-xs font-mono resize-y;
+  background: oklch(0.25 0 0 / 0.9);
+  min-height: 6rem;
+}
+
+.import-details {
+  @apply mt-2 text-xs;
+}
+
+.import-details__summary {
+  @apply cursor-pointer text-muted-foreground hover:text-foreground transition-colors;
+}
+
+.import-warning {
+  @apply text-sm text-yellow-600 dark:text-yellow-400;
+}
+
+.import-details__list {
+  @apply list-disc pl-4 mt-1 space-y-0.5 text-muted-foreground;
+}
+
+/* ============================================
+   Admin Sheet Styles
+   ============================================ */
+
+.admin-sheet {
+  @apply max-h-[85vh] overflow-y-auto;
+}
+
+.admin-sheet__body {
+  @apply flex flex-col gap-4 px-5 py-4;
+}
+
+.admin-sheet__grid {
+  @apply grid grid-cols-4 gap-3;
+}
+
+.admin-sheet__row {
+  @apply flex gap-3;
+}
+
+.admin-sheet__field {
+  @apply flex flex-col gap-1;
+}
+
+.admin-sheet__field-full {
+  @apply flex flex-col gap-1 flex-1;
+}
+
+.admin-sheet__label {
+  @apply text-xs font-semibold text-muted-foreground;
+}
+
+.admin-sheet__input {
+  @apply text-center tabular-nums;
+}
+
+.admin-sheet__matchup {
+  @apply flex items-center justify-center gap-3 text-sm font-semibold py-2;
+}
+
+.admin-sheet__vs {
+  @apply text-muted-foreground;
+}
+
+.admin-sheet__save {
+  @apply w-full;
+}
+
+.admin-sheet__delete {
+  @apply w-full;
+}
+
+.standings-import__team-cell {
+  @apply text-left truncate;
+  max-width: 14ch;
+}
+
+/* ============================================
    Chat Styles
    ============================================ */
 
@@ -1320,10 +1402,510 @@
   @apply relative z-10 flex-1 cursor-pointer min-w-0;
 }
 
+/* ============================================
+   Dashboard Styles
+   ============================================ */
+
+.dashboard {
+  @apply min-h-screen pb-20 lg:pb-6 px-4 pt-4;
+}
+
+.dashboard__empty {
+  @apply text-center text-muted-foreground py-16;
+}
+
+.dashboard__section {
+  @apply mb-6;
+}
+
+.dashboard__section-title {
+  @apply text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3;
+}
+
+.dashboard__cards {
+  @apply flex flex-col gap-3;
+}
+
+.dashboard__cards--compact .event-card {
+  @apply py-2 px-3;
+}
+
+.dashboard__cards--compact .event-card__meta {
+  @apply hidden;
+}
+
+/* ============================================
+   Team Banner
+   ============================================ */
+
+.team-banner {
+  @apply relative rounded-xl overflow-hidden mb-4;
+  min-height: 7rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: oklch(0.15 0 0);
+}
+
+.team-banner__overlay {
+  @apply absolute inset-0 flex flex-col justify-end p-4;
+  background: linear-gradient(to top, oklch(0 0 0 / 0.75), oklch(0 0 0 / 0.1));
+}
+
+.team-banner__division {
+  @apply absolute top-3 right-3 font-bold drop-shadow-lg;
+  color: white;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.team-banner__bottom {
+  @apply flex items-center gap-3;
+}
+
+.team-banner__record {
+  @apply font-bold tabular-nums drop-shadow;
+  color: white;
+  font-size: 1.15rem;
+}
+
+.team-banner__streak {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold;
+}
+
+.team-banner__streak--win {
+  background: oklch(0.3 0.1 150);
+  color: oklch(0.9 0.1 150);
+}
+
+.team-banner__streak--loss {
+  background: oklch(0.3 0.1 25);
+  color: oklch(0.9 0.1 25);
+}
+
+.team-banner__streak--tie {
+  background: oklch(0.3 0 0);
+  color: oklch(0.8 0 0);
+}
+
+/* ============================================
+   Next Games
+   ============================================ */
+
+.next-games {
+  @apply flex flex-col gap-2;
+}
+
+.next-games__empty {
+  @apply text-sm text-muted-foreground;
+}
+
+.next-game {
+  @apply flex items-center gap-3 rounded-lg px-3 py-2;
+  background: oklch(0.22 0 0 / 0.92);
+}
+
+.next-game__datetime {
+  @apply shrink-0 text-xs text-muted-foreground;
+  width: 5.5rem;
+}
+
+.next-game__opponent {
+  @apply flex-1 text-sm font-medium text-foreground truncate;
+}
+
+.next-game__venue {
+  @apply hidden sm:block text-xs text-muted-foreground truncate;
+  max-width: 8rem;
+}
+
+.next-game__badge {
+  @apply text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0;
+}
+
+.next-game__badge--regular_season {
+  background: oklch(0.3 0.08 150);
+  color: oklch(0.85 0.1 150);
+}
+
+.next-game__badge--playoff {
+  background: oklch(0.3 0.08 30);
+  color: oklch(0.85 0.12 30);
+}
+
+.next-game__badge--playdown {
+  background: oklch(0.3 0.08 60);
+  color: oklch(0.85 0.1 60);
+}
+
+/* ============================================
+   Event Card Styles
+   ============================================ */
+
+.event-card {
+  @apply block rounded-xl border p-4 transition-colors;
+  background: oklch(0.22 0 0 / 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.event-card:hover {
+  @apply border-primary/50;
+}
+
+.event-card--active {
+  @apply border-l-4 border-l-green-500;
+}
+
+.event-card--completed {
+  @apply opacity-70;
+}
+
+.event-card__top {
+  @apply flex items-center gap-2 mb-2;
+}
+
+.event-card__badge {
+  @apply text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full;
+  background: oklch(0.3 0 0);
+  color: oklch(0.8 0 0);
+}
+
+.event-card__badge--tournament {
+  background: oklch(0.3 0.08 250);
+  color: oklch(0.85 0.1 250);
+}
+
+.event-card__badge--regular_season {
+  background: oklch(0.3 0.08 150);
+  color: oklch(0.85 0.1 150);
+}
+
+.event-card__badge--playoff {
+  background: oklch(0.3 0.08 30);
+  color: oklch(0.85 0.12 30);
+}
+
+.event-card__badge--playdown {
+  background: oklch(0.3 0.08 60);
+  color: oklch(0.85 0.1 60);
+}
+
+.event-card__badge--provincial {
+  background: oklch(0.3 0.1 350);
+  color: oklch(0.85 0.12 350);
+}
+
+.event-card__badge--exhibition {
+  background: oklch(0.3 0.05 200);
+  color: oklch(0.8 0.06 200);
+}
+
+.event-card__live-dot {
+  @apply h-2 w-2 rounded-full bg-green-500 animate-pulse;
+}
+
+.event-card__name {
+  @apply text-base font-semibold text-foreground leading-tight;
+}
+
+.event-card__meta {
+  @apply flex items-center gap-2 mt-1 text-xs text-muted-foreground;
+}
+
+.event-card__dates {
+  @apply shrink-0;
+}
+
+.event-card__location {
+  @apply truncate;
+}
+
+.event-card__record {
+  @apply mt-2 text-sm font-bold tabular-nums text-foreground;
+}
+
+/* ============================================
+   Event Detail Styles
+   ============================================ */
+
+.event-detail {
+  @apply min-h-screen pb-20 lg:pb-6;
+}
+
+.event-detail__header {
+  @apply flex items-center gap-3 px-4 py-3 border-b;
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
+}
+
+.event-detail__back {
+  @apply shrink-0 p-1 rounded-md text-muted-foreground hover:text-foreground transition-colors;
+}
+
+.event-detail__back-icon {
+  @apply h-5 w-5;
+}
+
+.event-detail__info {
+  @apply flex flex-col min-w-0;
+}
+
+.event-detail__name {
+  @apply text-base font-bold leading-tight truncate;
+}
+
+.event-detail__location {
+  @apply text-xs text-muted-foreground truncate;
+}
+
+.event-detail__add-btn {
+  @apply shrink-0 p-2 rounded-md text-muted-foreground hover:text-foreground
+         hover:bg-muted transition-colors ml-auto;
+}
+
+.event-detail__add-icon {
+  @apply h-5 w-5;
+}
+
+.event-detail__season-standings {
+  @apply px-4 pt-3;
+}
+
+.event-detail__tabs {
+  @apply px-4 py-2 sticky top-0 z-10 border-b lg:top-[53px];
+  background: oklch(0.145 0 0 / 0.85);
+  backdrop-filter: blur(14px);
+}
+
 .team-picker__row-division {
   @apply relative z-10 shrink-0 pr-4 text-white font-bold cursor-pointer
          transition-opacity hover:opacity-80;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 1.25rem;
   line-height: 1;
+}
+
+/* Rankings Import */
+.rankings-badge {
+  @apply inline-block rounded px-1.5 py-0.5 text-xs font-bold uppercase;
+  font-size: 0.65rem;
+}
+.rankings-badge--lg { @apply bg-blue-600 text-white; }
+.rankings-badge--tn { @apply bg-purple-600 text-white; }
+.rankings-badge--po { @apply bg-orange-600 text-white; }
+.rankings-badge--pr { @apply bg-red-600 text-white; }
+.rankings-badge--dt { @apply bg-pink-600 text-white; }
+.rankings-badge--nc { @apply bg-yellow-600 text-black; }
+.rankings-badge--ex { @apply bg-gray-500 text-white; }
+
+.rankings-result {
+  @apply font-bold text-center;
+}
+.rankings-result--w { @apply text-green-400; }
+.rankings-result--l { @apply text-red-400; }
+.rankings-result--t { @apply text-yellow-400; }
+
+.rankings-import__actions {
+  @apply flex gap-3 mt-2;
+}
+
+.rankings-summary {
+  @apply flex flex-wrap gap-2 items-center py-2;
+  font-size: 0.85rem;
+}
+
+.rankings-analysis {
+  @apply mt-4;
+}
+
+.rankings-cluster {
+  @apply pl-2 mb-3;
+}
+.rankings-cluster__name {
+  @apply font-semibold text-sm mb-1;
+  color: oklch(0.85 0.05 220);
+}
+
+.rankings-match--matched {
+  color: oklch(0.75 0.15 145);
+}
+.rankings-match--conflict {
+  color: oklch(0.8 0.18 30);
+  @apply font-semibold;
+}
+.rankings-match--new {
+  color: oklch(0.8 0.1 220);
+}
+.rankings-match--imported {
+  color: oklch(0.75 0.15 145);
+  @apply font-semibold;
+}
+.rankings-match--error {
+  color: oklch(0.75 0.2 25);
+}
+
+.rankings-import-results {
+  @apply mt-4 pt-4 border-t border-white/10;
+}
+
+/* ============================================
+   Top Nav Gear Icon
+   ============================================ */
+
+.top-nav__gear {
+  @apply p-2 rounded-md transition-colors;
+  color: oklch(0.6 0 0);
+}
+.top-nav__gear:hover {
+  color: oklch(0.85 0 0);
+}
+.top-nav__gear--active {
+  color: oklch(0.95 0 0);
+}
+.top-nav__gear-icon {
+  @apply h-5 w-5;
+}
+
+/* ============================================
+   Admin Page
+   ============================================ */
+
+.admin-page {
+  @apply min-h-screen pb-20 lg:pb-6 px-4 pt-4;
+}
+
+.admin-page__title {
+  @apply text-lg font-bold text-foreground mb-4;
+}
+
+.admin-page__tabs {
+  @apply mb-4;
+}
+
+.admin-page__standings-section {
+  @apply mb-6;
+}
+
+.admin-page__import-section {
+  @apply mt-6 pt-4 border-t border-white/10;
+}
+
+.admin-page__section-title {
+  @apply text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3;
+}
+
+/* ============================================
+   Admin Manager (Games / Events lists)
+   ============================================ */
+
+.admin-manager {
+  @apply flex flex-col gap-4;
+}
+
+.admin-manager__toolbar {
+  @apply flex items-center gap-3;
+}
+
+.admin-manager__count {
+  @apply flex-1 text-sm text-muted-foreground;
+}
+
+.admin-manager__list {
+  @apply flex flex-col gap-1;
+}
+
+.admin-manager__row {
+  @apply flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer transition-colors;
+  background: oklch(0.22 0 0 / 0.92);
+}
+.admin-manager__row:hover {
+  background: oklch(0.28 0 0 / 0.92);
+}
+
+.admin-manager__date {
+  @apply shrink-0 text-xs text-muted-foreground;
+  width: 7rem;
+}
+
+.admin-manager__matchup {
+  @apply flex-1 text-sm font-medium text-foreground truncate;
+}
+
+.admin-manager__score {
+  @apply shrink-0 text-sm font-bold tabular-nums text-foreground;
+  width: 3.5rem;
+  text-align: center;
+}
+
+.admin-manager__event {
+  @apply shrink-0 text-xs text-muted-foreground truncate;
+  max-width: 6rem;
+}
+
+.admin-manager__event-name {
+  @apply flex-1 text-sm font-medium text-foreground truncate;
+}
+
+.admin-manager__event-type {
+  @apply shrink-0 text-xs text-muted-foreground;
+}
+
+.admin-manager__team-name {
+  @apply flex-1 text-sm font-medium text-foreground truncate;
+}
+
+.admin-manager__team-level {
+  @apply shrink-0 text-xs text-muted-foreground uppercase;
+}
+
+/* ============================================
+   Playdown Setup
+   ============================================ */
+
+.playdown-create {
+  @apply flex flex-col gap-3 p-3 rounded-lg border border-white/10;
+  background: oklch(0.15 0 0);
+}
+
+.playdown-create__row {
+  @apply flex gap-3;
+}
+
+.playdown-create__field {
+  @apply flex-1;
+}
+
+.playdown-section {
+  @apply mt-4;
+}
+
+.playdown-section__title {
+  @apply text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2;
+}
+
+.playdown-teams {
+  @apply flex flex-col gap-1 max-h-40 overflow-y-auto;
+}
+
+.playdown-team-check {
+  @apply flex items-center gap-2 text-sm text-foreground px-2 py-1 rounded cursor-pointer;
+}
+.playdown-team-check:hover {
+  background: oklch(0.2 0 0);
+}
+
+.playdown-generate {
+  @apply flex items-end gap-3;
+}
+
+.playdown-generate__input {
+  width: 5rem;
+}
+
+.playdown-qualifying {
+  background: oklch(0.2 0.06 150 / 0.3);
+}
+
+.playdown-qualify-note {
+  @apply text-xs text-muted-foreground mt-2 italic;
 }

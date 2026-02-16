@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { ScheduleView } from "./ScheduleView"
-import { ScoreEntrySheet } from "@/components/score-entry/ScoreEntrySheet"
+import { GameEditSheet } from "@/components/admin/GameEditSheet"
 import { TeamGamesSheet } from "./TeamGamesSheet"
 import type { Game, Pool, RankingsMap } from "@/lib/types"
 
@@ -50,9 +50,8 @@ export function ScheduleWithScoreEntry({
         onGameTap={handleGameTap}
         onTeamTap={handleTeamTap}
       />
-      <ScoreEntrySheet
+      <GameEditSheet
         game={selectedGame}
-        rankings={rankings}
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         onSaved={handleSaved}

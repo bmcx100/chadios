@@ -104,7 +104,7 @@ export function TeamPicker() {
 
   function handleSelect(teamId: string) {
     setActiveTeam(teamId)
-    router.push("/standings")
+    router.push("/dashboard")
   }
 
   function toggleFavourite(teamId: string) {

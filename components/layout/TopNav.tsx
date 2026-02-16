@@ -6,13 +6,12 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useTeam } from "@/components/team/TeamProvider"
 import { createClient } from "@/lib/supabase/client"
-import { Calendar, Trophy, Ellipsis, MessageSquare, ArrowLeftRight } from "lucide-react"
+import { LayoutDashboard, Ellipsis, MessageSquare, ArrowLeftRight, Settings } from "lucide-react"
 
 const navItems = [
-  { href: "/standings", label: "Standings", icon: Trophy },
-  { href: "/schedule", label: "Schedule", icon: Calendar },
-  { href: "/misc", label: "Misc", icon: Ellipsis },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/chat", label: "Chat", icon: MessageSquare },
+  { href: "/misc", label: "Misc", icon: Ellipsis },
 ]
 
 export function TopNav() {
@@ -36,7 +35,7 @@ export function TopNav() {
   return (
     <nav className="top-nav">
       <div className="top-nav__left">
-        <Link href="/standings" className="top-nav__brand">
+        <Link href="/dashboard" className="top-nav__brand">
           <span className="top-nav__brand-name">Stat in Stand</span>
         </Link>
         {teamName && (
@@ -46,9 +45,20 @@ export function TopNav() {
           </Link>
         )}
       </div>
+      <Link
+          href="/admin"
+          className={cn(
+            "top-nav__gear",
+            pathname.startsWith("/admin") && "top-nav__gear--active"
+          )}
+          aria-label="Admin"
+        >
+          <Settings className="top-nav__gear-icon" />
+        </Link>
       <div className="top-nav__links">
         {navItems.map((item) => {
           const isActive = pathname === item.href
+            || (item.href === "/dashboard" && pathname.startsWith("/event/"))
           const Icon = item.icon
 
           return (

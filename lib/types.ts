@@ -8,6 +8,7 @@ export type GameStage =
   | "consolation"
   | "regular_season"
   | "playoff"
+  | "playdown"
 
 export interface Team {
   id: string
@@ -73,6 +74,26 @@ export interface TiebreakerRule {
   formula_direction: string | null
   head_to_head_max_teams: number | null
   description: string | null
+}
+
+export type EventType =
+  | "regular_season"
+  | "tournament"
+  | "playoff"
+  | "playdown"
+  | "provincial"
+  | "exhibition"
+
+export interface TournamentEvent {
+  id: string
+  name: string
+  start_date: string | null
+  end_date: string | null
+  location: string | null
+  event_type: EventType
+  division: string | null
+  level: string | null
+  skill_level: string | null
 }
 
 export type RankingsMap = Record<string, number>

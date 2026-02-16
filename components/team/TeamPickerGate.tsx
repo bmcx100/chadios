@@ -16,7 +16,7 @@ export function TeamPickerGate() {
   useEffect(() => {
     if (loading) return
     if (activeTeamId && isAutoRedirect) {
-      router.replace("/standings")
+      router.replace("/dashboard")
     } else {
       setReady(true)
     }

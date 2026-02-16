@@ -63,6 +63,8 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   const setActiveTeam = useCallback((teamId: string) => {
     storeTeamId(teamId)
     setActiveTeamIdState(teamId)
+    // Set cookie immediately so server-side reads pick it up on navigation
+    document.cookie = `active_team_id=${teamId}; path=/; max-age=31536000`
     if (!getFavouriteTeamIds().includes(teamId)) {
       addFavouriteTeamId(teamId)
       setFavourites(getFavouriteTeamIds())

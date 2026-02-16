@@ -3,13 +3,13 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Calendar, Trophy, Ellipsis, MessageSquare, ArrowLeftRight } from "lucide-react"
+import { LayoutDashboard, Ellipsis, MessageSquare, ArrowLeftRight, Settings } from "lucide-react"
 
 const navItems = [
-  { href: "/standings", label: "Standings", icon: Trophy },
-  { href: "/schedule", label: "Schedule", icon: Calendar },
-  { href: "/misc", label: "Misc", icon: Ellipsis },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/chat", label: "Chat", icon: MessageSquare },
+  { href: "/misc", label: "Misc", icon: Ellipsis },
+  { href: "/admin", label: "Admin", icon: Settings },
 ]
 
 export function BottomNav() {
@@ -29,6 +29,7 @@ export function BottomNav() {
       </Link>
       {navItems.map((item) => {
         const isActive = pathname === item.href
+          || (item.href === "/dashboard" && pathname.startsWith("/event/"))
         const Icon = item.icon
 
         return (
